@@ -36,5 +36,5 @@ services:
             - MYSQL_DATABASE=Tunaiku_Loan
         volumes:
             - ./mysql:/var/lib/mysql
-#        ports:
-#            - "3357:3306"
+        ports:
+            - "3357:3306"
