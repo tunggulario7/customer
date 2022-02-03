@@ -27,8 +27,6 @@ services:
             - .:/var/www
             - logs:/var/www/logs
 #            - docker/php/php.ini:/usr/local/etc/php.ini
-        depends_on:
-            -   db_local
 
     db_local:
         image: mysql:8.0

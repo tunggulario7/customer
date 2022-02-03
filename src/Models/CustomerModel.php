@@ -13,11 +13,9 @@ class CustomerModel
 
     private string $name;
     private int $ktp;
-    private string $loanAmount;
-    private int $loanPeriod;
-    private string $loanPurpose;
     private string $dateOfBirth;
     private string $sex;
+    private string $address;
 
     public function getName(): string
     {
@@ -37,36 +35,6 @@ class CustomerModel
     public function setKtp($ktp): void
     {
         $this->ktp = $ktp;
-    }
-
-    public function getLoanAmount(): string
-    {
-        return $this->loanAmount;
-    }
-
-    public function setLoanAmount($loanAmount): void
-    {
-        $this->loanAmount = $loanAmount;
-    }
-
-    public function getLoanPeriod(): int
-    {
-        return $this->loanPeriod;
-    }
-
-    public function setLoanPeriod($loanPeriod): void
-    {
-        $this->loanPeriod = $loanPeriod;
-    }
-
-    public function getLoanPurpose(): string
-    {
-        return $this->loanPurpose;
-    }
-
-    public function setLoanPurpose($loanPurpose): void
-    {
-        $this->loanPurpose = $loanPurpose;
     }
 
     public function getDateOfBirth(): string
@@ -89,6 +57,16 @@ class CustomerModel
         $this->sex = $sex;
     }
 
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    public function setAddress($address): void
+    {
+        $this->address = $address;
+    }
+
     /**
      * Function for validation request
      * @param $request
@@ -104,17 +82,12 @@ class CustomerModel
 
         $this->setName($request['name']);
         $this->setKtp($request['ktp']);
-        $this->setLoanAmount($request['loanAmount']);
-        $this->setLoanPeriod($request['loanPeriod']);
-        $this->setLoanPurpose($request['loanPurpose']);
         $this->setDateOfBirth($request['dateOfBirth']);
         $this->setSex($request['sex']);
+        $this->setAddress($request['address']);
 
         $customerValidator = v::attribute('name', v::alpha(' '))
             ->attribute('ktp', v::KtpRule($this->getDateOfBirth(), $this->getSex()))
-            ->attribute('loanAmount', v::number()->between(1000, 10000))
-            ->attribute('loanPeriod', v::number()->between(1, 12))
-            ->attribute('loanPurpose', v::in(['vacation', 'renovation', 'electronics', 'wedding', 'rent', 'car', 'investment']))
             ->attribute('dateOfBirth', v::date())
             ->attribute('sex', v::in(['M', 'F']));
 

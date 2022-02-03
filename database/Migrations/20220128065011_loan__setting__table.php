@@ -16,6 +16,8 @@ final class Loan_setting_table extends AbstractMigration
             ->addColumn('loan_purpose_id', 'integer')
             ->addColumn('period', 'integer')
             ->addForeignKey('loan_purpose_id', 'loan_purpose', 'id')
+            ->addColumn('created_at', 'datetime')
+            ->addColumn('updated_at', 'datetime', ['null' => true])
             ->create();
     }
 

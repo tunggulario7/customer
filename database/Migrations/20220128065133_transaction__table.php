@@ -19,6 +19,7 @@ final class Transaction_table extends AbstractMigration
             ->addColumn('loan_period', 'integer')
             ->addForeignKey('customer_id', 'customers', "id")
             ->addForeignKey('loan_purpose_id', 'loan_purpose', 'id')
+            ->addColumn('updated_at', 'datetime', ['null' => true])
             ->create();
     }
 

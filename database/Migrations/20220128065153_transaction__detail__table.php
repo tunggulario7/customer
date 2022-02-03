@@ -19,6 +19,8 @@ final class Transaction_detail_table extends AbstractMigration
             ->addColumn('amount', 'double')
             ->addColumn('paid', 'boolean')
             ->addForeignKey('transaction_id', 'transactions', 'id')
+            ->addColumn('created_at', 'datetime')
+            ->addColumn('updated_at', 'datetime', ['null' => true])
             ->create();
     }
 

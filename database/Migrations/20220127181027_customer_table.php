@@ -14,10 +14,12 @@ final class CustomerTable extends AbstractMigration
     {
         $this->table('customers')
             ->addColumn('name', 'string')
-            ->addColumn('ktp', 'integer')
+            ->addColumn('ktp', 'biginteger')
             ->addColumn('date_of_birth', 'date')
-            ->addColumn('sex', 'string')
+            ->addColumn('sex', 'enum', ['values' => ['M', 'F']])
             ->addColumn('address', 'text')
+            ->addColumn('created_at', 'datetime')
+            ->addColumn('updated_at', 'datetime', ['null' => true])
             ->create();
     }
 
