@@ -24,16 +24,11 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
-        "ext-pdo": "*",
-        "cakephp/database": "^4.3",
-        "doctrine/dbal": "^3.3",
-        "lulco/phoenix": "^2.0",
         "monolog/monolog": "^2.3",
         "php-di/php-di": "^6.3",
-        "php-kit/ext-pdo": "^1.1",
         "respect/validation": "^2.2",
         "slim/psr7": "^1.5",
-        "slim/slim": "^4.9"
+        "slim/slim": "3.*"
     },
     "require-dev": {
         "jangregor/phpstan-prophecy": "^1.0.0",

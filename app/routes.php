@@ -19,7 +19,8 @@ return function (App $app) {
         $group->get('/data', 'App\Controllers\CustomerController:getCustomer')->setName('get-customer-data');
 
         $group->get('/db-test', function (Request $request, Response $response) {
-            $db = new PDO("mysql:host=127.0.0.1;dbname=coba;port=3357;", 'root', 'admin123');
+            $db = new PDO("mysql:host=db_local;dbname=Tunaiku_Loan;port=3306;", 'root', 'admin123');
+            var_dump($db);
             $sth = $db->prepare("SELECT * FROM coba");
             $sth->execute();
             $data = $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -28,7 +29,5 @@ return function (App $app) {
             return $response->withHeader('Content-Type', 'application/json');
         });
     });
-
-
 
 };

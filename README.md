@@ -72,3 +72,21 @@ http://localhost:8080/customer
 "sex": "Male"
 }
 ]
+
+
+##Setup Migration Database
+
+### Create Migration Table
+
+```bash
+php vendor/bin/phoenix create <migration>
+```
+
+### Running Migrate Table
+```bash
+php vendor/bin/phoenix migrate
+```
+### Rollback Migrate Table
+```bash
+php vendor/bin/phoenix rollback
+```
