@@ -7,7 +7,7 @@ namespace App\Services;
 use App\Factory\Connection;
 use PDO;
 
-class CustomerService
+class LoanPurposeService
 {
     private Connection $connection;
 
@@ -33,25 +33,25 @@ class CustomerService
     }
 
     /**
-     * function Get All Customer Data
+     * function Get All Loan Purpose Data
      * @return array
      */
     public function getAll(): array
     {
-        $sqlQuery = "SELECT * FROM customers";
+        $sqlQuery = "SELECT * FROM loan_purpose";
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * function Get by ID Customer Data
+     * function Get by ID Loan Purpose Data
      * @param $id
      * @return array
      */
     public function getById($id): array
     {
-        $sqlQuery = "SELECT * FROM customers WHERE id=:id";
+        $sqlQuery = "SELECT * FROM loan_purpose WHERE id=:id";
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
         $query->bindParam("id", $id);
         $query->execute();
@@ -59,51 +59,33 @@ class CustomerService
     }
 
     /**
-     * function Insert Customer Data
+     * function Insert Loan Purpose Data
      * @param $data
      * @return string
      */
     public function insert($data): string
     {
-        $dateNow = date("Y-m-d H:i:s");
-        $sqlQuery = "INSERT INTO customers (name, ktp, date_of_birth, sex, address, created_at) VALUES (:name, :ktp, :date_of_birth, :sex, :address, :created_at)";
+        $sqlQuery = "INSERT INTO loan_purpose (name) VALUES (:name)";
         $pdo = $this->getConnection()->connect();
         $query = $pdo->prepare($sqlQuery);
         $query->bindParam(":name", $data['name']);
-        $query->bindParam(":ktp", $data['ktp']);
-        $query->bindParam(":date_of_birth", $data['dateOfBirth']);
-        $query->bindParam(":sex", $data['sex']);
-        $query->bindParam(":address", $data['address']);
-        $query->bindParam(":created_at", $dateNow);
         $query->execute();
 
         return (string) $pdo->lastInsertId();
     }
 
     /**
-     * function Insert Customer Data
+     * function Insert Loan Purpose Data
      * @param $data
      * @param $id
      * @return string
      */
     public function update($data, $id): string
     {
-        $dateNow = date("Y-m-d H:i:s");
-        $sql = "UPDATE customers SET ";
-        $sqlQuery = '';
-        $setField = 'updated_at = :updated_at';
-
-        //Set Field Update
-        foreach ($data as $itemId => $value) {
-            $setField = $setField . ',' . $itemId . '=' . "'" . $value . "'";
-        }
-
-        //Set Query String
-        $sqlQuery .= $sql . $setField . ' WHERE id = :id';
-
+        $sqlQuery = "UPDATE loan_purpose SET name = :name WHERE id = :id";
         $pdo = $this->getConnection()->connect();
         $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":updated_at", $dateNow);
+        $query->bindParam(":name", $data['name']);
         $query->bindParam(":id", $id['id']);
         $query->execute();
 
@@ -111,13 +93,13 @@ class CustomerService
     }
 
     /**
-     * function Delete Customer Data
+     * function Delete Loan Purpose Data
      * @param $id
      * @return string
      */
     public function delete($id): string
     {
-        $sqlQuery = "DELETE FROM customers WHERE id=:id";
+        $sqlQuery = "DELETE FROM loan_purpose WHERE id=:id";
         $pdo = $this->getConnection()->connect();
         $query = $pdo->prepare($sqlQuery);
         $query->bindParam(":id", $id['id']);
@@ -125,4 +107,5 @@ class CustomerService
 
         return $id['id'];
     }
+
 }

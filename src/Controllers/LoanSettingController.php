@@ -5,25 +5,25 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Factory\Connection;
-use App\Models\CustomerModel;
-use App\Services\CustomerService;
+use App\Models\LoanSettingModel;
+use App\Services\LoanSettingService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class CustomerController
+class LoanSettingController
 {
     /**
-     * @return CustomerService
+     * @return LoanSettingService
      */
-    public function getCustomerService(): CustomerService
+    public function getLoanSettingService(): LoanSettingService
     {
         $connection = new Connection();
-        return new CustomerService($connection);
+        return new LoanSettingService($connection);
     }
 
     public function getAll(Request $request, Response $response): Response
     {
-        $data = self::getCustomerService()->getAll();
+        $data = self::getLoanSettingService()->getAll();
         $response->getBody()->write(json_encode($data));
         return $response->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
@@ -32,18 +32,15 @@ class CustomerController
     public function insert(Request $request, Response $response): Response
     {
         $requestBody = $request->getParsedBody();
-        $customerValidation = new CustomerModel();
-        $validation = $customerValidation->validate($requestBody);
+        $loanSettingValidation = new LoanSettingModel();
+        $validation = $loanSettingValidation->validate($requestBody);
 
         if (empty($validation)) {
             $data = [
-                'name' => $customerValidation->getName(),
-                'ktp' => $customerValidation->getKtp(),
-                'dateOfBirth' => $customerValidation->getDateOfBirth(),
-                'sex' => $customerValidation->getSex(),
-                'address' => $customerValidation->getAddress(),
+                'loanPurposeId' => $loanSettingValidation->getLoanPurposeId(),
+                'period' => $loanSettingValidation->getPeriod()
             ];
-            $id = self::getCustomerService()->insert($data);
+            $id = self::getLoanSettingService()->insert($data);
 
             $returnBody = $data;
             $returnBody['id'] = $id;
@@ -65,18 +62,15 @@ class CustomerController
     public function update(Request $request, Response $response, $id): Response
     {
         $requestBody = $request->getParsedBody();
-        $customerValidation = new CustomerModel();
-        $validation = $customerValidation->validate($requestBody);
+        $loanSettingValidation = new LoanSettingModel();
+        $validation = $loanSettingValidation->validate($requestBody);
 
         if (empty($validation)) {
             $data = [
-                'name' => $customerValidation->getName(),
-                'ktp' => $customerValidation->getKtp(),
-                'date_of_birth' => $customerValidation->getDateOfBirth(),
-                'sex' => $customerValidation->getSex(),
-                'address' => $customerValidation->getAddress(),
+                'loan_purpose_id' => $loanSettingValidation->getLoanPurposeId(),
+                'period' => $loanSettingValidation->getPeriod()
             ];
-            $id = self::getCustomerService()->update($data, $id);
+            $id = self::getLoanSettingService()->update($data, $id);
 
             $returnBody = $data;
             $returnBody['id'] = $id;
@@ -97,7 +91,7 @@ class CustomerController
 
     public function delete(Request $request, Response $response, $id): Response
     {
-        self::getCustomerService()->delete($id);
+        self::getLoanSettingService()->delete($id);
         $response->getBody()->write('{
                     "status": "OK",
                     "message": "Delete Success"
@@ -105,4 +99,5 @@ class CustomerController
         return $response->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
     }
+
 }

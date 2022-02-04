@@ -21,4 +21,18 @@ return function (App $app) {
         $group->delete('/[{id}]', 'App\Controllers\CustomerController::delete')->setName('delete-data');
     });
 
+    $app->group('/loan/purpose', function (Group $group) {
+        $group->get('', 'App\Controllers\LoanPurposeController::getAll')->setName('get-data');
+        $group->post('', 'App\Controllers\LoanPurposeController::insert')->setName('insert-data');
+        $group->put('/[{id}]', 'App\Controllers\LoanPurposeController::update')->setName('update-data');
+        $group->delete('/[{id}]', 'App\Controllers\LoanPurposeController::delete')->setName('delete-data');
+    });
+
+    $app->group('/loan/setting', function (Group $group) {
+        $group->get('', 'App\Controllers\LoanSettingController::getAll')->setName('get-data');
+        $group->post('', 'App\Controllers\LoanSettingController::insert')->setName('insert-data');
+        $group->put('/[{id}]', 'App\Controllers\LoanSettingController::update')->setName('update-data');
+        $group->delete('/[{id}]', 'App\Controllers\LoanSettingController::delete')->setName('delete-data');
+    });
+
 };
