@@ -42,8 +42,7 @@ class LoanSettingController
             ];
             $id = self::getLoanSettingService()->insert($data);
 
-            $returnBody = $data;
-            $returnBody['id'] = $id;
+            $returnBody = self::getLoanSettingService()->getById($id);
             $statusCode = 200;
 
             $returnBody = json_encode($returnBody);
@@ -72,8 +71,7 @@ class LoanSettingController
             ];
             $id = self::getLoanSettingService()->update($data, $id);
 
-            $returnBody = $data;
-            $returnBody['id'] = $id;
+            $returnBody = self::getLoanSettingService()->getById($id);
             $statusCode = 200;
 
             $returnBody = json_encode($returnBody);

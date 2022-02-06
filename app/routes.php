@@ -35,4 +35,8 @@ return function (App $app) {
         $group->delete('/[{id}]', 'App\Controllers\LoanSettingController::delete')->setName('delete-data');
     });
 
+    $app->group('/installment/calculation', function (Group $group) {
+        $group->get('', 'App\Controllers\InstallmentController::calculation')->setName('get-installment');
+    });
+
 };

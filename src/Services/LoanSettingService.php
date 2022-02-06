@@ -38,7 +38,7 @@ class LoanSettingService
      */
     public function getAll(): array
     {
-        $sqlQuery = "SELECT * FROM loan_settings";
+        $sqlQuery = "SELECT LS.id, name AS loanPurpose, period FROM loan_settings LS INNER JOIN loan_purpose LP ON LP.id = LS.loan_purpose_id";
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
@@ -51,9 +51,23 @@ class LoanSettingService
      */
     public function getById($id): array
     {
-        $sqlQuery = "SELECT * FROM loan_settings WHERE id=:id";
+        $sqlQuery = "SELECT LS.id, name AS loanPurpose, period FROM loan_settings LS INNER JOIN loan_purpose LP ON LP.id = LS.loan_purpose_id WHERE LS.id=:id";
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
         $query->bindParam("id", $id);
+        $query->execute();
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * function Get by ID Loan Setting Data
+     * @param $loanPurposeid
+     * @return array
+     */
+    public function getByLoanPurpose($loanPurposeid): array
+    {
+        $sqlQuery = "SELECT LS.id, name AS loanPurpose, period FROM loan_settings LS INNER JOIN loan_purpose LP ON LP.id = LS.loan_purpose_id WHERE loan_purpose_id=:loan_purpose_id";
+        $query = $this->getConnection()->connect()->prepare($sqlQuery);
+        $query->bindParam("loan_purpose_id", $loanPurposeid);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
