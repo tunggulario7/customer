@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Factory\Connection;
 use App\Models\TransactionModel;
-use App\Services\LoanSettingService;
 use App\Services\TransactionDetailService;
 use App\Services\TransactionService;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -63,7 +62,7 @@ class TransactionController
                 $period = $i * 30;
                 $datePeriod = '+' . $period . ' days';
 
-                $dueDate = date('Y-m-d', strtotime($datePeriod, strtotime($requestBody['loanDate'])));
+                $dueDate = date('Y-m-d', strtotime($datePeriod, strtotime($requestBody['transactionDate'])));
 
                 self::getTransactionDetailService()->insert([
                     'transactionId' => $id,

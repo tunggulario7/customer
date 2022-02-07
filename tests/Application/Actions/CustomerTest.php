@@ -7,8 +7,6 @@ use App\Controllers\CustomerController;
 
 class CustomerTest extends TestCase
 {
-
-
     public function testInsertDataProvider(): array
     {
         return [

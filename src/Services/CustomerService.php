@@ -55,11 +55,7 @@ class CustomerService
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
         $query->bindParam("id", $id);
         $query->execute();
-
-        if (!($query->fetch(PDO::FETCH_ASSOC))) {
-            return [];
-        }
-        return $query->fetch(PDO::FETCH_ASSOC);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**

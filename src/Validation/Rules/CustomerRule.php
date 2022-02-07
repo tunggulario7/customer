@@ -18,7 +18,7 @@ class CustomerRule extends AbstractRule
         $connection = new Connection();
         $customerService = new CustomerService($connection);
 
-        if ($customer && $customerService->getById($input)) {
+        if ($customer && count($customerService->getById($input)) > 0) {
             return true;
         }
         return false;
