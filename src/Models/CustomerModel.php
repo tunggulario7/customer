@@ -87,7 +87,43 @@ class CustomerModel
         $this->setAddress($request['address']);
 
         $customerValidator = v::attribute('name', v::alpha(' '))
-            ->attribute('ktp', v::KtpRule($this->getDateOfBirth(), $this->getSex()))
+            ->attribute('ktp', v::KtpRule($this->getDateOfBirth(), $this->getSex(), 0))
+            ->attribute('dateOfBirth', v::date())
+            ->attribute('sex', v::in(['M', 'F']));
+
+        $errorMessage = [];
+        try {
+            $customerValidator->assert($this);
+        } catch (NestedValidationException $ex) {
+            $messages = $ex->getMessages();
+            foreach ($messages as $message) {
+                $errorMessage[] = $message;
+            }
+        }
+        return $errorMessage;
+    }
+
+    /**
+     * Function for validation request
+     * @param $request
+     * @return array|mixed
+     */
+    public function validateUpdate($request, $id)
+    {
+        Factory::setDefaultInstance(
+            (new Factory())
+                ->withRuleNamespace('App\\Validation\\Rules')
+                ->withExceptionNamespace('App\\Validation\\Exceptions')
+        );
+
+        $this->setName($request['name']);
+        $this->setKtp($request['ktp']);
+        $this->setDateOfBirth($request['dateOfBirth']);
+        $this->setSex($request['sex']);
+        $this->setAddress($request['address']);
+
+        $customerValidator = v::attribute('name', v::alpha(' '))
+            ->attribute('ktp', v::KtpRule($this->getDateOfBirth(), $this->getSex(), (int) $id))
             ->attribute('dateOfBirth', v::date())
             ->attribute('sex', v::in(['M', 'F']));
 

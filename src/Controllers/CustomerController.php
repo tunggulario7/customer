@@ -66,7 +66,7 @@ class CustomerController
     {
         $requestBody = $request->getParsedBody();
         $customerValidation = new CustomerModel();
-        $validation = $customerValidation->validate($requestBody);
+        $validation = $customerValidation->validateUpdate($requestBody, $id);
 
         if (empty($validation)) {
             $data = [
@@ -78,7 +78,9 @@ class CustomerController
             ];
             $id = self::getCustomerService()->update($data, $id);
 
+            unset($data['date_of_birth']);
             $returnBody = $data;
+            $returnBody['dateOfBirth'] = $customerValidation->getDateOfBirth();
             $returnBody['id'] = $id;
             $statusCode = 200;
 

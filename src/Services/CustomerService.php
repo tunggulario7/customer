@@ -63,6 +63,37 @@ class CustomerService
     }
 
     /**
+     * function Get by ID Customer Data
+     * @param $field
+     * @param $value
+     * @return array
+     */
+    public function getByField($field, $value): array
+    {
+        $sqlQuery = "SELECT * FROM customers WHERE ". $field ."=:field";
+        $query = $this->getConnection()->connect()->prepare($sqlQuery);
+        $query->bindParam("field", $value);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * function Get by ID Customer Data
+     * @param $field
+     * @param $value
+     * @return array
+     */
+    public function getByFieldWithId($field, $value, $id): array
+    {
+        $sqlQuery = "SELECT * FROM customers WHERE ". $field ."=:field AND id=:id";
+        $query = $this->getConnection()->connect()->prepare($sqlQuery);
+        $query->bindParam("field", $value);
+        $query->bindParam("id", $id);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * function Insert Customer Data
      * @param $data
      * @return string
