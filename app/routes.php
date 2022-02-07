@@ -39,4 +39,8 @@ return function (App $app) {
         $group->get('', 'App\Controllers\InstallmentController::calculation')->setName('get-installment');
     });
 
+    $app->group('/transaction', function (Group $group) {
+        $group->post('', 'App\Controllers\TransactionController::insert')->setName('insert-transaction');
+    });
+
 };
