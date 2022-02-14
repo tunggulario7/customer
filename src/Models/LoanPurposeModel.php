@@ -19,7 +19,11 @@ class LoanPurposeModel
 
     public function setName($name): void
     {
-        $this->name = $name;
+        try {
+            $this->name = $name;
+        } catch (\Throwable $e) {
+            $this->name = '0';
+        }
     }
 
     /**
@@ -31,7 +35,7 @@ class LoanPurposeModel
     {
         $this->setName($request['name']);
 
-        $customerValidator = v::attribute('name', v::alpha());
+        $customerValidator = v::attribute('name', v::alpha(' '));
 
         $errorMessage = [];
         try {

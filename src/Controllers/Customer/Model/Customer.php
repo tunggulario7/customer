@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Controllers\Customer\Model;
 
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Factory;
 use Respect\Validation\Validator as V;
 
-class CustomerModel
+class Customer
 {
 
     private string $name;
@@ -24,7 +24,11 @@ class CustomerModel
 
     public function setName($name): void
     {
-        $this->name = $name;
+        try {
+            $this->name = $name;
+        } catch (\Throwable $e) {
+            $this->name = '0';
+        }
     }
 
     public function getKtp(): int
@@ -34,7 +38,11 @@ class CustomerModel
 
     public function setKtp($ktp): void
     {
-        $this->ktp = $ktp;
+        try {
+            $this->ktp = $ktp;
+        } catch (\Throwable $e) {
+            $this->ktp = 0;
+        }
     }
 
     public function getDateOfBirth(): string
@@ -44,7 +52,11 @@ class CustomerModel
 
     public function setDateOfBirth($dateOfBirth): void
     {
-        $this->dateOfBirth = $dateOfBirth;
+        try {
+            $this->dateOfBirth = $dateOfBirth;
+        } catch (\Throwable $e) {
+            $this->dateOfBirth = '0';
+        }
     }
 
     public function getSex(): string
@@ -54,7 +66,11 @@ class CustomerModel
 
     public function setSex($sex): void
     {
-        $this->sex = $sex;
+        try {
+            $this->sex = $sex;
+        } catch (\Throwable $e) {
+            $this->sex = '0';
+        }
     }
 
     public function getAddress(): string
@@ -64,7 +80,11 @@ class CustomerModel
 
     public function setAddress($address): void
     {
-        $this->address = $address;
+        try {
+            $this->address = $address;
+        } catch (\Throwable $e) {
+            $this->address = '';
+        }
     }
 
     /**

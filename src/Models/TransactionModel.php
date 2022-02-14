@@ -22,7 +22,11 @@ class TransactionModel
 
     public function setCustomerId($customerId): void
     {
-        $this->customerId = $customerId;
+        try {
+            $this->customerId = $customerId;
+        } catch (\Throwable $e) {
+            $this->customerId = 0;
+        }
     }
 
     public function getTransactionDate(): string
@@ -32,7 +36,11 @@ class TransactionModel
 
     public function setTransactionDate($transactionDate): void
     {
-        $this->transactionDate = $transactionDate;
+        try {
+            $this->transactionDate = $transactionDate;
+        } catch (\Throwable $e) {
+            $this->transactionDate = '0';
+        }
     }
 
     public function getLoanPurpose(): int
@@ -42,7 +50,11 @@ class TransactionModel
 
     public function setLoanPurpose($loanPurpose): void
     {
-        $this->loanPurpose = $loanPurpose;
+        try {
+            $this->loanPurpose = $loanPurpose;
+        } catch (\Throwable $e) {
+            $this->loanPurpose = 0;
+        }
     }
 
     public function getPeriod(): int
@@ -52,7 +64,11 @@ class TransactionModel
 
     public function setPeriod($period): void
     {
-        $this->period = $period;
+        try {
+            $this->period = $period;
+        } catch (\Throwable $e) {
+            $this->period = 0;
+        }
     }
 
     public function getLoanAmount(): int
@@ -62,7 +78,11 @@ class TransactionModel
 
     public function setLoanAmount($loanAmount): void
     {
-        $this->loanAmount = $loanAmount;
+        try {
+            $this->loanAmount = $loanAmount;
+        } catch (\Throwable $e) {
+            $this->loanAmount = 0;
+        }
     }
 
     /**

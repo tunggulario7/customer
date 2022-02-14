@@ -21,7 +21,11 @@ class LoanSettingModel
 
     public function setLoanPurposeId($loanPurposeId): void
     {
-        $this->loanPurposeId = $loanPurposeId;
+        try {
+            $this->loanPurposeId = $loanPurposeId;
+        } catch (\Throwable $e) {
+            $this->loanPurposeId = 0;
+        }
     }
 
     public function getPeriod(): int
@@ -31,7 +35,11 @@ class LoanSettingModel
 
     public function setPeriod($period): void
     {
-        $this->period = $period;
+        try {
+            $this->period = $period;
+        } catch (\Throwable $e) {
+            $this->period = 0;
+        }
     }
 
     /**

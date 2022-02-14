@@ -15,8 +15,8 @@ return function (App $app) {
     });
 
     $app->group('/customer', function (Group $group) {
-        $group->get('', 'App\Controllers\CustomerController::getAll')->setName('get-data');
-        $group->post('', 'App\Controllers\CustomerController::insert')->setName('insert-data');
+        $group->get('', \App\Controllers\Customer\Request\GetAllCustomerRequest::class)->setName('get-data');
+        $group->post('', \App\Controllers\Customer\Request\AddCustomerRequest::class)->setName('insert-data');
         $group->put('/[{id}]', 'App\Controllers\CustomerController::update')->setName('update-data');
         $group->delete('/[{id}]', 'App\Controllers\CustomerController::delete')->setName('delete-data');
     });
