@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Modules\LoanPurpose\Service;
 
 use App\Factory\Connection;
 use PDO;
@@ -53,9 +53,14 @@ class LoanPurposeService
     {
         $sqlQuery = "SELECT * FROM loan_purpose WHERE id=:id";
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("id", $id);
+        $query->bindParam(":id", $id);
         $query->execute();
-        return $query->fetch(PDO::FETCH_ASSOC);
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return [];
+        }
+        return $data;
     }
 
     /**
@@ -107,5 +112,4 @@ class LoanPurposeService
 
         return $id['id'];
     }
-
 }

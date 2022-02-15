@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Modules\Customer\Service;
 
 use App\Factory\Connection;
 use PDO;
@@ -55,7 +55,12 @@ class CustomerService
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
         $query->bindParam("id", $id);
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return [];
+        }
+        return $data;
     }
 
     /**

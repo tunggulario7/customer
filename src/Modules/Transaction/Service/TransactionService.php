@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Services;
+declare(strict_types=1);
+
+namespace App\Modules\Transaction\Service;
 
 use App\Factory\Connection;
 use PDO;
@@ -57,7 +59,12 @@ class TransactionService
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
         $query->bindParam("id", $id);
         $query->execute();
-        return $query->fetch(PDO::FETCH_ASSOC);
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$data) {
+            return [];
+        }
+        return $data;
     }
 
     /**

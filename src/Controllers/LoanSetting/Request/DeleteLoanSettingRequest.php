@@ -1,24 +1,22 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Controllers\LoanSetting\Request;
 
-namespace App\Controllers\Customer\Request;
-
-use App\Modules\Customer\Service\CustomerService;
+use App\Modules\LoanSetting\Service\LoanSettingService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class DeleteCustomerRequest
+class DeleteLoanSettingRequest
 {
-    protected CustomerService $customerService;
-    public function __construct(CustomerService $customerService)
+    protected LoanSettingService $loanSettingService;
+    public function __construct(LoanSettingService $loanSettingService)
     {
-        $this->customerService = $customerService;
+        $this->loanSettingService = $loanSettingService;
     }
 
     public function __invoke(Request $request, Response $response, $args): Response
     {
-        $this->customerService->delete($args);
+        $this->loanSettingService->delete($args);
         $response->getBody()->write('{
                     "status": "OK",
                     "message": "Delete Success"

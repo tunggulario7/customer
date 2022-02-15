@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers\Customer\Request;
 
 use App\Controllers\Customer\Model\Customer;
-use App\Services\CustomerService;
+use App\Modules\Customer\Service\CustomerService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -20,9 +22,9 @@ class UpdateCustomerRequest
     public function __invoke(Request $request, Response $response, $args): Response
     {
         $requestBody = $request->getParsedBody();
-        $validation = $this->customerModel->validateUpdate($requestBody, $args);
+        $validate = $this->customerModel->validateUpdate($requestBody, $args);
 
-        if (empty($validation)) {
+        if (empty($validate)) {
             $data = [
                 'name' => $this->customerModel->getName(),
                 'ktp' => $this->customerModel->getKtp(),
@@ -39,9 +41,8 @@ class UpdateCustomerRequest
             $statusCode = 200;
 
             $returnBody = json_encode($returnBody);
-
         } else {
-            $returnBody = json_encode($validation);
+            $returnBody = json_encode($validate);
             $statusCode = 422;
         }
 

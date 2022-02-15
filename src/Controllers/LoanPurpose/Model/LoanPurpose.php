@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Controllers\LoanPurpose\Model;
 
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as V;
 
-class LoanPurposeModel
+class LoanPurpose
 {
 
     private string $name;

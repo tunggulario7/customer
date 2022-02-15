@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers\Customer\Request;
 
 use App\Controllers\Customer\Model\Customer;
-use App\Services\CustomerService;
+use App\Modules\Customer\Service\CustomerService;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class AddCustomerRequest
 {
-
     protected CustomerService $customerService;
     protected Customer $customerModel;
     public function __construct(CustomerService $customerService, Customer $customerModel)
@@ -36,7 +37,6 @@ class AddCustomerRequest
             $statusCode = 200;
 
             $returnBody = json_encode($returnBody);
-
         } else {
             $returnBody = json_encode($validate);
             $statusCode = 422;

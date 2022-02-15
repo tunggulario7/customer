@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Validation\Rules;
 
 use App\Factory\Connection;
-use App\Services\LoanPurposeService;
+use App\Modules\LoanPurpose\Service\LoanPurposeService;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as v;
 

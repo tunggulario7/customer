@@ -3,7 +3,7 @@
 namespace App\Validation\Rules;
 
 use App\Factory\Connection;
-use App\Services\CustomerService;
+use App\Modules\Customer\Service\CustomerService;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as v;
 
