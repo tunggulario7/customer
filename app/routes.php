@@ -14,6 +14,8 @@ use App\Controllers\LoanSetting\Request\AddLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\DeleteLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\GetAllLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\UpdateLoanSettingRequest;
+use App\Controllers\Installment\Request\InstallmentRequest;
+use App\Controllers\Transaction\Request\AddTransactionRequest;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -48,11 +50,11 @@ return function (App $app) {
     });
 
     $app->group('/installment/calculation', function (Group $group) {
-        $group->get('', 'App\Controllers\InstallmentController::calculation')->setName('get-installment');
+        $group->get('', InstallmentRequest::class)->setName('get-installment');
     });
 
     $app->group('/transaction', function (Group $group) {
-        $group->post('', 'App\Controllers\TransactionController::insert')->setName('insert-transaction');
+        $group->post('', AddTransactionRequest::class)->setName('insert-transaction');
     });
 
 };

@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Models;
+declare(strict_types=1);
+
+namespace App\Controllers\Transaction\Model;
 
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Factory;
 use Respect\Validation\Validator as V;
 
-class TransactionModel
+class Transaction
 {
 
     private int $customerId;
