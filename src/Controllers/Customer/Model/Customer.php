@@ -92,43 +92,7 @@ class Customer
      * @param $request
      * @return array|mixed
      */
-    public function validate($request)
-    {
-        Factory::setDefaultInstance(
-            (new Factory())
-                ->withRuleNamespace('App\\Validation\\Rules')
-                ->withExceptionNamespace('App\\Validation\\Exceptions')
-        );
-
-        $this->setName($request['name']);
-        $this->setKtp($request['ktp']);
-        $this->setDateOfBirth($request['dateOfBirth']);
-        $this->setSex($request['sex']);
-        $this->setAddress($request['address']);
-
-        $customerValidator = v::attribute('name', v::alpha(' '))
-            ->attribute('ktp', v::KtpRule($this->getDateOfBirth(), $this->getSex(), 0))
-            ->attribute('dateOfBirth', v::date())
-            ->attribute('sex', v::in(['M', 'F']));
-
-        $errorMessage = [];
-        try {
-            $customerValidator->assert($this);
-        } catch (NestedValidationException $ex) {
-            $messages = $ex->getMessages();
-            foreach ($messages as $message) {
-                $errorMessage[] = $message;
-            }
-        }
-        return $errorMessage;
-    }
-
-    /**
-     * Function for validation request
-     * @param $request
-     * @return array|mixed
-     */
-    public function validateUpdate($request, $id)
+    public function validate($request, $id = 0)
     {
         Factory::setDefaultInstance(
             (new Factory())

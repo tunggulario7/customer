@@ -47,7 +47,6 @@ class FixedInstallment implements InstallmentInterface
 
     public function getAmount(): float
     {
-        var_dump($this->amount);
         return $this->amount;
     }
 }

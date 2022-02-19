@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controllers\LoanSetting\Request;
 
+use App\Controllers\BaseRequest;
 use App\Modules\LoanSetting\Service\LoanSettingService;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
-class GetAllLoanSettingRequest
+class GetAllLoanSettingRequest extends BaseRequest
 {
     protected LoanSettingService $loanSettingService;
     public function __construct(LoanSettingService $loanSettingService)
@@ -16,11 +16,11 @@ class GetAllLoanSettingRequest
         $this->loanSettingService = $loanSettingService;
     }
 
-    public function __invoke(Request $request, Response $response): Response
+    public function getResponse(): Response
     {
         $data = $this->loanSettingService->getAll();
-        $response->getBody()->write(json_encode($data));
-        return $response->withHeader('Content-Type', 'application/json')
+        $this->response->getBody()->write(json_encode($data));
+        return $this->response->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
     }
 }

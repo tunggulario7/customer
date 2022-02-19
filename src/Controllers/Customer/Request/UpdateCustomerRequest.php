@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controllers\Customer\Request;
 
+use App\Controllers\BaseRequest;
 use App\Controllers\Customer\Model\Customer;
 use App\Modules\Customer\Service\CustomerService;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
-class UpdateCustomerRequest
+class UpdateCustomerRequest extends BaseRequest
 {
     protected CustomerService $customerService;
     protected Customer $customerModel;
@@ -19,10 +19,10 @@ class UpdateCustomerRequest
         $this->customerModel = $customerModel;
     }
 
-    public function __invoke(Request $request, Response $response, $args): Response
+    public function getResponse(): Response
     {
-        $requestBody = $request->getParsedBody();
-        $validate = $this->customerModel->validateUpdate($requestBody, $args);
+        $requestBody = $this->request->getParsedBody();
+        $validate = $this->customerModel->validate($requestBody, $this->args['id']);
 
         if (empty($validate)) {
             $data = [
@@ -32,7 +32,7 @@ class UpdateCustomerRequest
                 'sex' => $this->customerModel->getSex(),
                 'address' => $this->customerModel->getAddress(),
             ];
-            $id = $this->customerService->update($data, $args);
+            $id = $this->customerService->update($data, $this->args);
 
             unset($data['date_of_birth']);
             $returnBody = $data;
@@ -46,8 +46,8 @@ class UpdateCustomerRequest
             $statusCode = 422;
         }
 
-        $response->getBody()->write($returnBody);
-        return $response
+        $this->response->getBody()->write($returnBody);
+        return $this->response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode);
     }

@@ -4,32 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\Transaction\Service;
 
-use App\Factory\Connection;
-use PDO;
+use App\Modules\Transaction\Provider\TransactionProvider;
 
 class TransactionService
 {
-    private Connection $connection;
+    private TransactionProvider $transactionProvider;
 
-    public function __construct(Connection $connection)
+    public function __construct(TransactionProvider $transactionProvider)
     {
-        $this->connection = $connection;
-    }
-
-    /**
-     * @return Connection
-     */
-    public function getConnection(): Connection
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @param Connection $connection
-     */
-    public function setConnection(Connection $connection): void
-    {
-        $this->connection = $connection;
+        $this->transactionProvider = $transactionProvider;
     }
 
     /**
@@ -38,12 +21,7 @@ class TransactionService
      */
     public function getAll(): array
     {
-        $sqlQuery = "SELECT transaction_date AS transactionDate, CS.name, CS.ktp, CS.date_of_birth AS dateOfBirth, LP.name AS loanPurpose  FROM transactions TR
-    INNER JOIN customers CS ON CS.id = TR.customer_id
-    INNER JOIN loan_purpose LP ON LP.id = TR.loan_purpose_id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $this->transactionProvider->getAll();
     }
 
     /**
@@ -53,18 +31,7 @@ class TransactionService
      */
     public function getById($id): array
     {
-        $sqlQuery = "SELECT transaction_date AS transactionDate, CS.name, CS.ktp, CS.date_of_birth AS dateOfBirth, LP.name AS loanPurpose FROM transactions TR
-    INNER JOIN customers CS ON CS.id = TR.customer_id
-    INNER JOIN loan_purpose LP ON LP.id = TR.loan_purpose_id WHERE TR.id=:id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("id", $id);
-        $query->execute();
-        $data = $query->fetch(PDO::FETCH_ASSOC);
-
-        if (!$data) {
-            return [];
-        }
-        return $data;
+        return $this->transactionProvider->getById($id);
     }
 
     /**
@@ -74,16 +41,28 @@ class TransactionService
      */
     public function insert($data): string
     {
-        $sqlQuery = "INSERT INTO transactions (transaction_date, customer_id, loan_purpose_id, loan_period) VALUES (:transaction_date, :customer_id, :loan_purpose_id, :loan_period)";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":transaction_date", $data['transactionDate']);
-        $query->bindParam(":customer_id", $data['customerId']);
-        $query->bindParam(":loan_purpose_id", $data['loanPurpose']);
-        $query->bindParam(":loan_period", $data['loanPeriod']);
-        $query->execute();
+        $field = "transaction_date, customer_id, loan_purpose_id, loan_period";
+        $value = ":transaction_date, :customer_id, :loan_purpose_id, :loan_period";
+        $params = [
+            [
+                "field" => ":transaction_date",
+                "value" => $data['transactionDate']
+            ],
+            [
+                "field" => ":customer_id",
+                "value" => $data['customerId']
+            ],
+            [
+                "field" => ":loan_purpose_id",
+                "value" => $data['loanPurpose']
+            ],
+            [
+                "field" => ":loan_period",
+                "value" => $data['loanPeriod']
+            ]
+        ];
 
-        return (string) $pdo->lastInsertId();
+        return $this->transactionProvider->insert($field, $value, $params);
     }
 
     /**
@@ -93,11 +72,7 @@ class TransactionService
      */
     public function delete($id): string
     {
-        $sqlQuery = "DELETE FROM transactions WHERE id=:id";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":id", $id['id']);
-        $query->execute();
+        $this->transactionProvider->delete($id);
 
         return $id['id'];
     }

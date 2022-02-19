@@ -4,32 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\LoanSetting\Service;
 
-use App\Factory\Connection;
-use PDO;
+use App\Modules\LoanSetting\Provider\LoanSettingProvider;
 
 class LoanSettingService
 {
-    private Connection $connection;
+    private LoanSettingProvider $loanSettingProvider;
 
-    public function __construct(Connection $connection)
+    public function __construct(LoanSettingProvider $loanSettingProvider)
     {
-        $this->connection = $connection;
-    }
-
-    /**
-     * @return Connection
-     */
-    public function getConnection(): Connection
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @param Connection $connection
-     */
-    public function setConnection(Connection $connection): void
-    {
-        $this->connection = $connection;
+        $this->loanSettingProvider = $loanSettingProvider;
     }
 
     /**
@@ -38,10 +21,7 @@ class LoanSettingService
      */
     public function getAll(): array
     {
-        $sqlQuery = "SELECT LS.id, name AS loanPurpose, period FROM loan_settings LS INNER JOIN loan_purpose LP ON LP.id = LS.loan_purpose_id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $this->loanSettingProvider->getAll();
     }
 
     /**
@@ -51,16 +31,7 @@ class LoanSettingService
      */
     public function getById($id): array
     {
-        $sqlQuery = "SELECT LS.id, name AS loanPurpose, period FROM loan_settings LS INNER JOIN loan_purpose LP ON LP.id = LS.loan_purpose_id WHERE LS.id=:id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("id", $id);
-        $query->execute();
-        $data = $query->fetch(PDO::FETCH_ASSOC);
-
-        if (!$data) {
-            return [];
-        }
-        return $data;
+        return $this->loanSettingProvider->getById($id);
     }
 
     /**
@@ -70,11 +41,7 @@ class LoanSettingService
      */
     public function getByLoanPurpose($loanPurposeid): array
     {
-        $sqlQuery = "SELECT LS.id, name AS loanPurpose, period FROM loan_settings LS INNER JOIN loan_purpose LP ON LP.id = LS.loan_purpose_id WHERE loan_purpose_id=:loan_purpose_id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("loan_purpose_id", $loanPurposeid);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $this->loanSettingProvider->getByLoanPurpose($loanPurposeid);
     }
 
     /**
@@ -85,15 +52,25 @@ class LoanSettingService
     public function insert($data): string
     {
         $dateNow = date("Y-m-d H:i:s");
-        $sqlQuery = "INSERT INTO loan_settings (loan_purpose_id, period, created_at) VALUES (:loan_purpose_id, :period, :created_at)";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":loan_purpose_id", $data['loanPurposeId']);
-        $query->bindParam(":period", $data['period']);
-        $query->bindParam(":created_at", $dateNow);
-        $query->execute();
 
-        return (string) $pdo->lastInsertId();
+        $field = "loan_purpose_id, period, created_at";
+        $value = ":loan_purpose_id, :period, :created_at";
+        $params = [
+            [
+                "field" => ":loan_purpose_id",
+                "value" => $data['loanPurposeId']
+            ],
+            [
+                "field" => ":period",
+                "value" => $data['period']
+            ],
+            [
+                "field" => ":created_at",
+                "value" => $dateNow
+            ]
+        ];
+
+        return $this->loanSettingProvider->insert($field, $value, $params);
     }
 
     /**
@@ -117,11 +94,7 @@ class LoanSettingService
         //Set Query String
         $sqlQuery .= $sql . $setField . ' WHERE id = :id';
 
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":updated_at", $dateNow);
-        $query->bindParam(":id", $id['id']);
-        $query->execute();
+        $this->loanSettingProvider->update($sqlQuery, $dateNow, $id);
 
         return (string) $id['id'];
     }
@@ -133,11 +106,7 @@ class LoanSettingService
      */
     public function delete($id): string
     {
-        $sqlQuery = "DELETE FROM loan_settings WHERE id=:id";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":id", $id['id']);
-        $query->execute();
+        $this->loanSettingProvider->delete($id);
 
         return $id['id'];
     }

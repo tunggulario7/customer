@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controllers\Customer\Request;
 
+use App\Controllers\BaseRequest;
 use App\Controllers\Customer\Model\Customer;
 use App\Modules\Customer\Service\CustomerService;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-class AddCustomerRequest
+class AddCustomerRequest extends BaseRequest
 {
     protected CustomerService $customerService;
     protected Customer $customerModel;
@@ -19,9 +19,9 @@ class AddCustomerRequest
         $this->customerModel = $customerModel;
     }
 
-    public function __invoke(Request $request, Response $response): Response
+    public function getResponse(): Response
     {
-        $validate = $this->customerModel->validate($request->getParsedBody());
+        $validate = $this->customerModel->validate($this->getRequestData());
         if (empty($validate)) {
             $data = [
                 'name' => $this->customerModel->getName(),
@@ -35,15 +35,13 @@ class AddCustomerRequest
             $returnBody = $data;
             $returnBody['id'] = $id;
             $statusCode = 200;
-
-            $returnBody = json_encode($returnBody);
         } else {
-            $returnBody = json_encode($validate);
+            $returnBody = $validate;
             $statusCode = 422;
         }
 
-        $response->getBody()->write($returnBody);
-        return $response
+        $this->response->getBody()->write(json_encode($returnBody));
+        return $this->response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode);
     }

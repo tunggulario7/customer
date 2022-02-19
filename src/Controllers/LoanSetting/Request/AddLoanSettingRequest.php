@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controllers\LoanSetting\Request;
 
+use App\Controllers\BaseRequest;
 use App\Controllers\LoanSetting\Model\LoanSetting;
 use App\Modules\LoanSetting\Service\LoanSettingService;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AddLoanSettingRequest
+class AddLoanSettingRequest extends BaseRequest
 {
     protected LoanSettingService $loanSettingService;
     protected LoanSetting $loanSettingModel;
@@ -19,9 +19,9 @@ class AddLoanSettingRequest
         $this->loanSettingModel = $loanSettingModel;
     }
 
-    public function __invoke(Request $request, Response $response): Response
+    public function getResponse(): Response
     {
-        $validate = $this->loanSettingModel->validate($request->getParsedBody());
+        $validate = $this->loanSettingModel->validate($this->request->getParsedBody());
 
         if (empty($validate)) {
             $data = [
@@ -39,8 +39,8 @@ class AddLoanSettingRequest
             $statusCode = 422;
         }
 
-        $response->getBody()->write($returnBody);
-        return $response
+        $this->response->getBody()->write($returnBody);
+        return $this->response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode);
     }

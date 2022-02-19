@@ -4,32 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\Customer\Service;
 
-use App\Factory\Connection;
-use PDO;
+use App\Modules\Customer\Provider\CustomerProvider;
 
 class CustomerService
 {
-    private Connection $connection;
+    protected CustomerProvider $customerProvider;
 
-    public function __construct(Connection $connection)
+    public function __construct(CustomerProvider $customerProvider)
     {
-        $this->connection = $connection;
-    }
-
-    /**
-     * @return Connection
-     */
-    public function getConnection(): Connection
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @param Connection $connection
-     */
-    public function setConnection(Connection $connection): void
-    {
-        $this->connection = $connection;
+        $this->customerProvider = $customerProvider;
     }
 
     /**
@@ -38,10 +21,7 @@ class CustomerService
      */
     public function getAll(): array
     {
-        $sqlQuery = "SELECT * FROM customers";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $this->customerProvider->getAll();
     }
 
     /**
@@ -51,16 +31,7 @@ class CustomerService
      */
     public function getById($id): array
     {
-        $sqlQuery = "SELECT * FROM customers WHERE id=:id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("id", $id);
-        $query->execute();
-        $data = $query->fetch(PDO::FETCH_ASSOC);
-
-        if (!$data) {
-            return [];
-        }
-        return $data;
+        return $this->customerProvider->getById($id);
     }
 
     /**
@@ -71,11 +42,7 @@ class CustomerService
      */
     public function getByField($field, $value): array
     {
-        $sqlQuery = "SELECT * FROM customers WHERE ". $field ."=:field";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("field", $value);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $this->customerProvider->getByField($field, $value);
     }
 
     /**
@@ -86,12 +53,7 @@ class CustomerService
      */
     public function getByFieldWithId($field, $value, $id): array
     {
-        $sqlQuery = "SELECT * FROM customers WHERE ". $field ."=:field AND id=:id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("field", $value);
-        $query->bindParam("id", $id);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $this->customerProvider->getByFieldWithId($field, $value, $id);
     }
 
     /**
@@ -102,18 +64,36 @@ class CustomerService
     public function insert($data): string
     {
         $dateNow = date("Y-m-d H:i:s");
-        $sqlQuery = "INSERT INTO customers (name, ktp, date_of_birth, sex, address, created_at) VALUES (:name, :ktp, :date_of_birth, :sex, :address, :created_at)";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":name", $data['name']);
-        $query->bindParam(":ktp", $data['ktp']);
-        $query->bindParam(":date_of_birth", $data['dateOfBirth']);
-        $query->bindParam(":sex", $data['sex']);
-        $query->bindParam(":address", $data['address']);
-        $query->bindParam(":created_at", $dateNow);
-        $query->execute();
+        $field = "name, ktp, date_of_birth, sex, address, created_at";
+        $value = ":name, :ktp, :date_of_birth, :sex, :address, :created_at";
+        $params = [
+            [
+                "field" => ":name",
+                "value" => $data['name']
+            ],
+            [
+                "field" => ":ktp",
+                "value" => $data['ktp']
+            ],
+            [
+                "field" => ":date_of_birth",
+                "value" => $data['dateOfBirth']
+            ],
+            [
+                "field" => ":sex",
+                "value" => $data['sex']
+            ],
+            [
+                "field" => ":address",
+                "value" => $data['address']
+            ],
+            [
+                "field" => ":created_at",
+                "value" => $dateNow
+            ]
+        ];
 
-        return (string) $pdo->lastInsertId();
+        return $this->customerProvider->insert($field, $value, $params);
     }
 
     /**
@@ -137,11 +117,7 @@ class CustomerService
         //Set Query String
         $sqlQuery .= $sql . $setField . ' WHERE id = :id';
 
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":updated_at", $dateNow);
-        $query->bindParam(":id", $id['id']);
-        $query->execute();
+        $this->customerProvider->update($sqlQuery, $dateNow, $id);
 
         return (string) $id['id'];
     }
@@ -153,11 +129,7 @@ class CustomerService
      */
     public function delete($id): string
     {
-        $sqlQuery = "DELETE FROM customers WHERE id=:id";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":id", $id['id']);
-        $query->execute();
+        $this->customerProvider->delete($id);
 
         return $id['id'];
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Validation\Rules;
 
 use App\Factory\Connection;
+use App\Modules\LoanPurpose\Provider\LoanPurposeProvider;
 use App\Modules\LoanPurpose\Service\LoanPurposeService;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as v;
@@ -18,9 +19,9 @@ class LoanPurposeRule extends AbstractRule
 
         //Get Loan Purpose Data
         $connection = new Connection();
-        $loanPurposeService = new LoanPurposeService($connection);
+        $loanPurposeProvider = new LoanPurposeProvider($connection);
 
-        $data = $loanPurposeService->getById($input);
+        $data = $loanPurposeProvider->getById($input);
 
         if ($validate && $data) {
             return true;

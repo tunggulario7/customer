@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Modules\LoanPurpose\Service;
+namespace App\Modules\LoanPurpose\Provider;
 
 use App\Factory\Connection;
 use PDO;
 
-class LoanPurposeService
+class LoanPurposeProvider
 {
     private Connection $connection;
 
@@ -112,4 +110,5 @@ class LoanPurposeService
 
         return $id['id'];
     }
+
 }

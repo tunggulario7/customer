@@ -15,7 +15,7 @@ class Installment
 
     public function getInstallments(): array
     {
-        $installment = $this->installmentModel->calculate();
+        $this->installmentModel->calculate();
 
         $installmentData = [];
         for ($i = 1; $i <= $this->installmentModel->getPeriod(); $i++) {
@@ -27,7 +27,7 @@ class Installment
             $installmentData[] = [
                 'period' => $i,
                 'dueDate' => $dueDate,
-                'installment' => $installment
+                'installment' => $this->installmentModel->getAmount()
             ];
         }
         return $installmentData;

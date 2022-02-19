@@ -4,30 +4,30 @@ declare(strict_types=1);
 
 namespace App\Controllers\LoanPurpose\Request;
 
+use App\Controllers\BaseRequest;
 use App\Controllers\LoanPurpose\Model\LoanPurpose;
-use App\Modules\LoanPurpose\Service\LoanPurposeService;
+use App\Modules\LoanPurpose\Provider\LoanPurposeProvider;
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AddLoanPurposeRequest
+class AddLoanPurposeRequest extends BaseRequest
 {
-    protected LoanPurposeService $loanPurposeService;
+    protected LoanPurposeProvider $loanPurposeProvider;
     protected LoanPurpose $loanPurposeModel;
-    public function __construct(LoanPurposeService $loanPurposeService, LoanPurpose $loanPurposeModel)
+    public function __construct(LoanPurposeProvider $loanPurposeProvider, LoanPurpose $loanPurposeModel)
     {
-        $this->loanPurposeService = $loanPurposeService;
+        $this->loanPurposeProvider = $loanPurposeProvider;
         $this->loanPurposeModel = $loanPurposeModel;
     }
 
-    public function __invoke(Request $request, Response $response): Response
+    public function getResponse(): Response
     {
-        $validate = $this->loanPurposeModel->validate($request->getParsedBody());
+        $validate = $this->loanPurposeModel->validate($this->request->getParsedBody());
 
         if (empty($validate)) {
             $data = [
                 'name' => $this->loanPurposeModel->getName(),
             ];
-            $id = $this->loanPurposeService->insert($data);
+            $id = $this->loanPurposeProvider->insert($data);
 
             $returnBody = $data;
             $returnBody['id'] = $id;
@@ -39,8 +39,8 @@ class AddLoanPurposeRequest
             $statusCode = 422;
         }
 
-        $response->getBody()->write($returnBody);
-        return $response
+        $this->response->getBody()->write($returnBody);
+        return $this->response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode);
     }

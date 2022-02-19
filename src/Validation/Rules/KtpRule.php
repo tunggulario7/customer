@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Validation\Rules;
 
 use App\Factory\Connection;
+use App\Modules\Customer\Provider\CustomerProvider;
 use App\Modules\Customer\Service\CustomerService;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as v;
@@ -26,7 +27,8 @@ class KtpRule extends AbstractRule
     {
         //Get Data KTP from Customer Table
         $connection = new Connection();
-        $customerService = new CustomerService($connection);
+        $customerProvider = new CustomerProvider($connection);
+        $customerService = new CustomerService($customerProvider);
 
         $input = (string) $input;
         $number = v::number()->notEmpty()->length(16, 16)->validate($input);

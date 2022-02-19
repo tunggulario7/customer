@@ -43,7 +43,6 @@ class AddTransactionRequest
 
 
             //Create Detail Transaction
-
             $fixedInstallment = new FixedInstallment();
             $fixedInstallment->setLoanDate($this->transactionModel->getTransactionDate());
             $fixedInstallment->setLoanAmount((int) $this->transactionModel->getLoanAmount());
@@ -52,16 +51,7 @@ class AddTransactionRequest
                 ->setInstallmentModel($fixedInstallment)
                 ->getInstallments();
 
-            for ($i = 0; $i < count($installment); $i++) {
-
-                $this->transactionDetailService->insert([
-                    'transactionId' => $id,
-                    'month' => $installment[$i]['period'],
-                    'dueDate' => $installment[$i]['dueDate'],
-                    'amount' => (int) $installment[$i]['installment'],
-                    'paid' => 0
-                ]);
-            }
+            $this->transactionDetailService->insert($installment, $id);
 
             $returnBody = $this->transactionService->getById($id);
             $returnBody['installment'] = $this->transactionDetailService->getAllByTransactionId($id);

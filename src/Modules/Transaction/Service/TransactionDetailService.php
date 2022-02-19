@@ -4,32 +4,16 @@ declare(strict_types=1);
 
 namespace App\Modules\Transaction\Service;
 
-use App\Factory\Connection;
-use PDO;
+
+use App\Modules\Transaction\Provider\TransactionDetailProvider;
 
 class TransactionDetailService
 {
-    private Connection $connection;
+    private TransactionDetailProvider $transactionDetailProvider;
 
-    public function __construct(Connection $connection)
+    public function __construct(TransactionDetailProvider $transactionDetailProvider)
     {
-        $this->connection = $connection;
-    }
-
-    /**
-     * @return Connection
-     */
-    public function getConnection(): Connection
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @param Connection $connection
-     */
-    public function setConnection(Connection $connection): void
-    {
-        $this->connection = $connection;
+        $this->transactionDetailProvider = $transactionDetailProvider;
     }
 
     /**
@@ -38,11 +22,7 @@ class TransactionDetailService
      */
     public function getAllByTransactionId($transactionId): array
     {
-        $sqlQuery = "SELECT *  FROM transaction_details WHERE transaction_id =:transaction_id";
-        $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("transaction_id", $transactionId);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $this->transactionDetailProvider->getAllByTransactionId($transactionId);
     }
 
     /**
@@ -50,21 +30,43 @@ class TransactionDetailService
      * @param $data
      * @return string
      */
-    public function insert($data): string
+    public function insert($data, $transactionId): string
     {
         $dateNow = date("Y-m-d H:i:s");
-        $sqlQuery = "INSERT INTO transaction_details (transaction_id, month, due_date, amount, paid, created_at) VALUES (:transaction_id, :month, :due_date, :amount, :paid, :created_at)";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":transaction_id", $data['transactionId']);
-        $query->bindParam(":month", $data['month']);
-        $query->bindParam(":due_date", $data['dueDate']);
-        $query->bindParam(":amount", $data['amount']);
-        $query->bindParam(":paid", $data['paid']);
-        $query->bindParam(":created_at", $dateNow);
-        $query->execute();
+        $field = "transaction_id, month, due_date, amount, paid, created_at";
+        $value = ":transaction_id, :month, :due_date, :amount, :paid, :created_at";
 
-        return (string) $pdo->lastInsertId();
+        for ($i = 0; $i < count($data); $i++) {
+            $params = [
+                [
+                    "field" => ":transaction_id",
+                    "value" => $transactionId
+                ],
+                [
+                    "field" => ":month",
+                    "value" => $data[$i]['period']
+                ],
+                [
+                    "field" => ":due_date",
+                    "value" => $data[$i]['dueDate']
+                ],
+                [
+                    "field" => ":amount",
+                    "value" => (int) $data[$i]['installment']
+                ],
+                [
+                    "field" => ":paid",
+                    "value" => 0
+                ],
+                [
+                    "field" => ":created_at",
+                    "value" => $dateNow
+                ]
+            ];
+            $this->transactionDetailProvider->insert($field, $value, $params);
+        }
+
+        return (string) $transactionId;
     }
 
     /**
@@ -74,11 +76,7 @@ class TransactionDetailService
      */
     public function delete($id): string
     {
-        $sqlQuery = "DELETE FROM transaction_details WHERE id=:id";
-        $pdo = $this->getConnection()->connect();
-        $query = $pdo->prepare($sqlQuery);
-        $query->bindParam(":id", $id['id']);
-        $query->execute();
+        $this->transactionDetailProvider->delete($id);
 
         return $id['id'];
     }
