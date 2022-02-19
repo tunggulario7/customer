@@ -42,8 +42,12 @@ class LoanPurpose
             $customerValidator->assert($this);
         } catch (NestedValidationException $ex) {
             $messages = $ex->getMessages();
-            foreach ($messages as $message) {
-                $errorMessage[] = $message;
+            foreach ($messages as $key => $message) {
+                $errorMessage[] = [
+                    "status" => $key,
+                    "message" => "Failed Validation",
+                    "errors" => $message
+                ];
             }
         }
         return $errorMessage;
