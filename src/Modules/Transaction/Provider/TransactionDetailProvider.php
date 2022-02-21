@@ -44,6 +44,19 @@ class TransactionDetailProvider
     }
 
     /**
+     * function Get All Transaction Detail Data
+     * @return array
+     */
+    public function getAllByTransactionIdNotPaid($transactionId): array
+    {
+        $sqlQuery = "SELECT *  FROM transaction_details WHERE transaction_id =:transaction_id AND paid = 0 ORDER BY month ASC";
+        $query = $this->getConnection()->connect()->prepare($sqlQuery);
+        $query->bindParam("transaction_id", $transactionId);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * function Insert Transaction Detail Data
      * @param $data
      * @return string
@@ -59,6 +72,23 @@ class TransactionDetailProvider
         $query->execute();
 
         return (string) $pdo->lastInsertId();
+    }
+
+    /**
+     * function Update Transaction Detail Data
+     * @param $data
+     * @param $id
+     * @return string
+     */
+    public function update($sqlQuery, $dateNow, $id): string
+    {
+        $pdo = $this->getConnection()->connect();
+        $query = $pdo->prepare($sqlQuery);
+        $query->bindParam(":updated_at", $dateNow);
+        $query->bindParam(":id", $id['id']);
+        $query->execute();
+
+        return (string) $id['id'];
     }
 
     /**

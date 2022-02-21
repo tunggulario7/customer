@@ -95,7 +95,7 @@ class LoanSettingProvider
     }
 
     /**
-     * function Insert Loan Setting Data
+     * function Update Loan Setting Data
      * @param $data
      * @param $id
      * @return string

@@ -26,6 +26,15 @@ class TransactionDetailService
     }
 
     /**
+     * function Get All Transaction Detail Data
+     * @return array
+     */
+    public function getAllByTransactionIdNotPaid($transactionId): array
+    {
+        return $this->transactionDetailProvider->getAllByTransactionIdNotPaid($transactionId);
+    }
+
+    /**
      * function Insert Transaction Detail Data
      * @param $data
      * @return string
@@ -33,8 +42,8 @@ class TransactionDetailService
     public function insert($data, $transactionId): string
     {
         $dateNow = date("Y-m-d H:i:s");
-        $field = "transaction_id, month, due_date, amount, paid, created_at";
-        $value = ":transaction_id, :month, :due_date, :amount, :paid, :created_at";
+        $field = "transaction_id, month, due_date, amount, underpayment, paid, created_at";
+        $value = ":transaction_id, :month, :due_date, :amount, :underpayment, :paid, :created_at";
 
         for ($i = 0; $i < count($data); $i++) {
             $params = [
@@ -55,6 +64,10 @@ class TransactionDetailService
                     "value" => (int) $data[$i]['installment']
                 ],
                 [
+                    "field" => ":underpayment",
+                    "value" => (int) $data[$i]['installment']
+                ],
+                [
                     "field" => ":paid",
                     "value" => 0
                 ],
@@ -67,6 +80,32 @@ class TransactionDetailService
         }
 
         return (string) $transactionId;
+    }
+
+    /**
+     * function Update Transaction Detail Data
+     * @param $data
+     * @param $id
+     * @return string
+     */
+    public function update($data, $id): string
+    {
+        $dateNow = date("Y-m-d H:i:s");
+        $sql = "UPDATE transaction_details SET ";
+        $sqlQuery = '';
+        $setField = 'updated_at = :updated_at';
+
+        //Set Field Update
+        foreach ($data as $itemId => $value) {
+            $setField = $setField . ',' . $itemId . '=' . "'" . $value . "'";
+        }
+
+        //Set Query String
+        $sqlQuery .= $sql . $setField . ' WHERE id = :id';
+
+        $this->transactionDetailProvider->update($sqlQuery, $dateNow, $id);
+
+        return (string) $id['id'];
     }
 
     /**

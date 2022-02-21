@@ -2,11 +2,27 @@
 
 namespace Tests\Application\Actions\Customer;
 
+use App\Controllers\Customer\Model\Customer;
+use App\Controllers\Customer\Request\AddCustomerRequest;
+use App\Controllers\Customer\Request\GetAllCustomerRequest;
+use App\Controllers\Customer\Request\UpdateCustomerRequest;
+use App\Modules\Customer\Service\CustomerService;
+use Slim\Psr7\Response;
 use Tests\TestCase;
-use App\Controllers\CustomerController;
 
 class CustomerTest extends TestCase
 {
+
+//    protected Response $response;
+//    protected CustomerService $customerService;
+//    protected Customer $customerModel;
+//
+//    protected function __construct(Response $response, CustomerService $customerService, Customer $customerModel)
+//    {
+//        $this->response = $response;
+//        $this->customerService = $customerService;
+//        $this->customerModel = $customerModel;
+//    }
     public function testInsertDataProvider(): array
     {
         return [
@@ -46,22 +62,45 @@ class CustomerTest extends TestCase
         ];
     }
 
+//    /** @dataProvider testInsertDataProvider */
+//    public function testInsertData(array $bodyJson, int $expectedStatusCode, string $expectedResponse)
+//    {
+//        //Create Request Body
+//        $requestBody = $this->createRequest('POST', '/customer', ['Content-Type' => 'application/json']);
+//        $json = $requestBody->withParsedBody($bodyJson);
+//
+//        var_dump($json);
+//
+//        $response = new \Slim\Psr7\Response();
+//
+//        $responseData = new AddCustomerRequest($this->customerService, $this->customerModel);
+//        var_dump($responseData);
+//        var_dump($responseData->getStatusCode());
+//
+////        $responseArray = json_decode($responseData->getBody(), true);
+//
+//        $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
+////        $this->assertEquals(json_decode($expectedResponse, true), $responseArray);
+//    }
+
     /** @dataProvider testInsertDataProvider */
     public function testInsertData(array $bodyJson, int $expectedStatusCode, string $expectedResponse)
     {
+        $app = $this->getAppInstance();
+        $container = $app->getContainer();
         //Create Request Body
         $requestBody = $this->createRequest('POST', '/customer', ['Content-Type' => 'application/json']);
         $json = $requestBody->withParsedBody($bodyJson);
+//        var_dump($requestBody);
+//        var_dump($json);
 
-        $response = new \Slim\Psr7\Response();
+        $response = $app->handle($json);
+//        var_dump($response);
 
-        $customer = new CustomerController();
-        $responseData = $customer->insert($json, $response);
+        $payload = json_decode($response->getBody(), true);
 
-        $responseArray = json_decode($responseData->getBody(), true);
-
-        $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
-        $this->assertEquals(json_decode($expectedResponse, true), $responseArray);
+        $this->assertEquals($expectedResponse, $payload);
+        $this->assertEquals($expectedStatusCode, $response->getStatusCode());
     }
 
     /** @dataProvider testNegativeInsertDataProvider */

@@ -16,6 +16,7 @@ use App\Controllers\LoanSetting\Request\GetAllLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\UpdateLoanSettingRequest;
 use App\Controllers\Installment\Request\InstallmentRequest;
 use App\Controllers\Transaction\Request\AddTransactionRequest;
+use App\Controllers\Payment\Request\PaymentRequest;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -55,6 +56,10 @@ return function (App $app) {
 
     $app->group('/transaction', function (Group $group) {
         $group->post('', AddTransactionRequest::class)->setName('insert-transaction');
+    });
+
+    $app->group('/payment', function (Group $group) {
+        $group->post('', PaymentRequest::class)->setName('payment-calculation');
     });
 
 };
