@@ -35,6 +35,16 @@ class LoanTransactionService
     }
 
     /**
+     * function Get by ID Loan Transaction Data
+     * @param $id
+     * @return array
+     */
+    public function getByCustomer($customerId): array
+    {
+        return $this->loanTransactionProvider->getByCustomer($customerId);
+    }
+
+    /**
      * function Insert Loan Transaction Data
      * @param $data
      * @return string

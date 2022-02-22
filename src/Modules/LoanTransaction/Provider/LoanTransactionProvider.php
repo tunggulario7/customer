@@ -68,6 +68,22 @@ class LoanTransactionProvider
     }
 
     /**
+     * function Get by ID Loan Transaction Data
+     * @param $id
+     * @return array
+     */
+    public function getByCustomer($customerId): array
+    {
+        $sqlQuery = "SELECT TR.id AS loanId, loan_date AS loanDate, CS.name, CS.ktp, CS.date_of_birth AS dateOfBirth, LP.name AS loanPurpose FROM loan_transactions TR
+    INNER JOIN customers CS ON CS.id = TR.customer_id
+    INNER JOIN loan_purpose LP ON LP.id = TR.loan_purpose_id WHERE TR.customer_id=:customer_id ORDER BY TR.id ASC";
+        $query = $this->getConnection()->connect()->prepare($sqlQuery);
+        $query->bindParam("customer_id", $customerId);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * function Insert Loan Transaction Data
      * @param $data
      * @return string

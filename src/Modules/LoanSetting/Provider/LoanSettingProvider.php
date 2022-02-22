@@ -82,7 +82,6 @@ class LoanSettingProvider
      */
     public function insert($field, $value, $params): string
     {
-        $dateNow = date("Y-m-d H:i:s");
         $sqlQuery = "INSERT INTO loan_settings ($field) VALUES ($value)";
         $pdo = $this->getConnection()->connect();
         $query = $pdo->prepare($sqlQuery);

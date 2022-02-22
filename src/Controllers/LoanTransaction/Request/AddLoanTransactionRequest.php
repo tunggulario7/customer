@@ -12,7 +12,7 @@ use App\Modules\LoanTransaction\Service\InstallmentService;
 use App\Modules\LoanTransaction\Service\LoanTransactionService;
 use Psr\Http\Message\ResponseInterface as Response;
 
-class AddTransactionRequest extends BaseRequest
+class AddLoanTransactionRequest extends BaseRequest
 {
     protected LoanTransactionService $loanTransactionService;
     protected InstallmentService $installmentService;

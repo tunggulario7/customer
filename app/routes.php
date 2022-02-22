@@ -15,7 +15,9 @@ use App\Controllers\LoanSetting\Request\DeleteLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\GetAllLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\UpdateLoanSettingRequest;
 use App\Controllers\Installment\Request\InstallmentRequest;
-use App\Controllers\LoanTransaction\Request\AddTransactionRequest;
+use App\Controllers\LoanTransaction\Request\AddLoanTransactionRequest;
+use App\Controllers\LoanTransaction\Request\GetLoanTransactionByCustomer;
+use App\Controllers\LoanTransaction\Request\GetLoanTransactionByLoanId;
 use App\Controllers\Payment\Request\PaymentRequest;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -55,7 +57,9 @@ return function (App $app) {
     });
 
     $app->group('/transaction', function (Group $group) {
-        $group->post('', AddTransactionRequest::class)->setName('insert-transaction');
+        $group->post('', AddLoanTransactionRequest::class)->setName('insert-loan-transaction');
+        $group->get('/[{id}]', GetLoanTransactionByLoanId::class)->setName('get-loan-transaction');
+        $group->get('/customer/[{customerId}]', GetLoanTransactionByCustomer::class)->setName('get-loan-transaction');
     });
 
     $app->group('/payment', function (Group $group) {

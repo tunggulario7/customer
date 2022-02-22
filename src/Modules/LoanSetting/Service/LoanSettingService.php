@@ -51,8 +51,6 @@ class LoanSettingService
      */
     public function insert($data): string
     {
-        $dateNow = date("Y-m-d H:i:s");
-
         $field = "loan_purpose_id, period, created_at";
         $value = ":loan_purpose_id, :period, :created_at";
         $params = [
@@ -66,7 +64,7 @@ class LoanSettingService
             ],
             [
                 "field" => ":created_at",
-                "value" => $dateNow
+                "value" => date("Y-m-d H:i:s")
             ]
         ];
 

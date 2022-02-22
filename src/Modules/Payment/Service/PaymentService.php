@@ -7,14 +7,17 @@ namespace App\Modules\Payment\Service;
 use App\Modules\LoanTransaction\Service\InstallmentService;
 use App\Modules\Payment\Model\PaymentFixCalculation;
 use App\Modules\Payment\Model\Payment;
+use App\Modules\Payment\Provider\PaymentProvider;
 
 class PaymentService
 {
-    private InstallmentService $installmentService;
+    protected InstallmentService $installmentService;
+    protected PaymentProvider $paymentProvider;
 
-    public function __construct(InstallmentService $installmentService)
+    public function __construct(InstallmentService $installmentService, PaymentProvider $paymentProvider)
     {
         $this->installmentService = $installmentService;
+        $this->paymentProvider = $paymentProvider;
     }
 
     /**
@@ -40,7 +43,32 @@ class PaymentService
             $amount = $payment['overPayment'];
             
             unset($payment['overPayment']);
-            
+
+            //Set For payments field insert
+            $field = "installment_id, payback, underpayment, created_at";
+            $value = ":installment_id, :payback, :underpayment, :created_at";
+
+            $params = [
+                [
+                    "field" => ":installment_id",
+                    "value" => $data['id']
+                ],
+                [
+                    "field" => ":payback",
+                    "value" => $payment['payback'] - $data['payback']
+                ],
+                [
+                    "field" => ":underpayment",
+                    "value" => $payment['underpayment']
+                ],
+                [
+                    "field" => ":created_at",
+                    "value" => date("Y-m-d H:i:s")
+                ]
+            ];
+            $this->paymentProvider->insert($field, $value, $params);
+
+            //Update Data Installment Table
             $this->installmentService->update($payment, $data);
 
             $payment['notice'] = "";
