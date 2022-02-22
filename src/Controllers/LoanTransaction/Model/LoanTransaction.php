@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Controllers\Transaction\Model;
+namespace App\Controllers\LoanTransaction\Model;
 
 use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Factory;
 use Respect\Validation\Validator as V;
 
-class Transaction
+class LoanTransaction
 {
 
     private int $customerId;
-    private string $transactionDate;
+    private string $loanDate;
     private int $loanPurpose;
     private int $period;
     private int $loanAmount;
@@ -31,17 +31,17 @@ class Transaction
         }
     }
 
-    public function getTransactionDate(): string
+    public function getLoanDate(): string
     {
-        return $this->transactionDate;
+        return $this->loanDate;
     }
 
-    public function setTransactionDate($transactionDate): void
+    public function setLoanDate($loanDate): void
     {
         try {
-            $this->transactionDate = $transactionDate;
+            $this->loanDate = $loanDate;
         } catch (\Throwable $e) {
-            $this->transactionDate = '0';
+            $this->loanDate = '0';
         }
     }
 
@@ -101,13 +101,13 @@ class Transaction
         );
 
         $this->setCustomerId($request['customerId']);
-        $this->setTransactionDate($request['transactionDate']);
+        $this->setLoanDate($request['loanDate']);
         $this->setLoanPurpose($request['loanPurpose']);
         $this->setPeriod($request['period']);
         $this->setLoanAmount($request['loanAmount']);
 
         $customerValidator = v::attribute('customerId', v::CustomerRule())
-            ->attribute('transactionDate', v::date())
+            ->attribute('loanDate', v::date())
             ->attribute('loanPurpose', v::LoanPurposeRule())
             ->attribute('period', v::intType()->between(1, 12))
             ->attribute('loanAmount', v::number()->between(1000, 10000));

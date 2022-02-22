@@ -11,20 +11,20 @@ use Respect\Validation\Validator as V;
 class Payment
 {
 
-    private int $transactionId;
+    private int $loanTransactionId;
     private int $totalPay;
 
-    public function getTransactionId(): int
+    public function getLoanTransactionId(): int
     {
-        return $this->transactionId;
+        return $this->loanTransactionId;
     }
 
-    public function setTransactionId($transactionId): void
+    public function setLoanTransactionId($loanTransactionId): void
     {
         try {
-            $this->transactionId = $transactionId;
+            $this->loanTransactionId = $loanTransactionId;
         } catch (\Throwable $e) {
-            $this->transactionId = 0;
+            $this->loanTransactionId = 0;
         }
     }
 
@@ -55,10 +55,10 @@ class Payment
                 ->withExceptionNamespace('App\\Validation\\Exceptions')
         );
 
-        $this->setTransactionId($request['transactionId']);
+        $this->setLoanTransactionId($request['loanTransactionId']);
         $this->setTotalPay($request['totalPay']);
 
-        $paymentValidator = v::attribute('transactionId', v::TransactionRule())
+        $paymentValidator = v::attribute('loanTransactionId', v::LoanTransactionRule())
             ->attribute('totalPay', v::number()->between(1000, 10000));
 
         $errorMessage = [];

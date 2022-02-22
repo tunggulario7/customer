@@ -6,18 +6,18 @@ namespace App\Controllers\Payment\Request;
 
 use App\Controllers\BaseRequest;
 use App\Controllers\Payment\Model\Payment;
-use App\Modules\Transaction\Service\TransactionDetailService;
+use App\Modules\LoanTransaction\Service\InstallmentService;
 use Psr\Http\Message\ResponseInterface as Response;
 use App\Modules\Payment\Service\PaymentService;
 
 class PaymentRequest extends BaseRequest
 {
-    protected TransactionDetailService $transactionDetailService;
+    protected InstallmentService $installmentService;
     protected Payment $paymentModel;
     protected PaymentService $paymentService;
-    public function __construct(TransactionDetailService $transactionDetailService, Payment $paymentModel, PaymentService $paymentService)
+    public function __construct(InstallmentService $installmentService, Payment $paymentModel, PaymentService $paymentService)
     {
-        $this->transactionDetailService = $transactionDetailService;
+        $this->installmentService = $installmentService;
         $this->paymentModel = $paymentModel;
         $this->paymentService = $paymentService;
     }
@@ -28,7 +28,7 @@ class PaymentRequest extends BaseRequest
         $validate = $this->paymentModel->validate($requestBody);
 
         if (empty($validate)) {
-            $returnBody = $this->paymentService->payment($requestBody['transactionId'], $requestBody['totalPay']);
+            $returnBody = $this->paymentService->payment($requestBody['loanTransactionId'], $requestBody['totalPay']);
             $statusCode = 200;
         } else {
             $returnBody = $validate;

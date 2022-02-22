@@ -15,7 +15,7 @@ use App\Controllers\LoanSetting\Request\DeleteLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\GetAllLoanSettingRequest;
 use App\Controllers\LoanSetting\Request\UpdateLoanSettingRequest;
 use App\Controllers\Installment\Request\InstallmentRequest;
-use App\Controllers\Transaction\Request\AddTransactionRequest;
+use App\Controllers\LoanTransaction\Request\AddTransactionRequest;
 use App\Controllers\Payment\Request\PaymentRequest;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;

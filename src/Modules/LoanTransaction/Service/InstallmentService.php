@@ -2,54 +2,54 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Transaction\Service;
+namespace App\Modules\LoanTransaction\Service;
 
+use App\Modules\LoanTransaction\Provider\InstallmentProvider;
 
-use App\Modules\Transaction\Provider\TransactionDetailProvider;
-
-class TransactionDetailService
+class InstallmentService
 {
-    private TransactionDetailProvider $transactionDetailProvider;
+    private InstallmentProvider $installmentProvider;
 
-    public function __construct(TransactionDetailProvider $transactionDetailProvider)
+    public function __construct(InstallmentProvider $installmentProvider)
     {
-        $this->transactionDetailProvider = $transactionDetailProvider;
+        $this->installmentProvider = $installmentProvider;
     }
 
     /**
-     * function Get All Transaction Detail Data
+     * function Get All LInstallment Data
      * @return array
      */
-    public function getAllByTransactionId($transactionId): array
+    public function getAllByLoanTransactionId($loanTransactionId): array
     {
-        return $this->transactionDetailProvider->getAllByTransactionId($transactionId);
+        return $this->installmentProvider->getAllByLoanTransactionId($loanTransactionId);
     }
 
     /**
-     * function Get All Transaction Detail Data
+     * function Get All Installment Data
      * @return array
      */
-    public function getAllByTransactionIdNotPaid($transactionId): array
+    public function getAllByLoanTransactionIdNotPaid($loanTransactionId): array
     {
-        return $this->transactionDetailProvider->getAllByTransactionIdNotPaid($transactionId);
+        return $this->installmentProvider->getAllByLoanTransactionIdNotPaid($loanTransactionId);
     }
 
     /**
-     * function Insert Transaction Detail Data
+     * function Insert Installment Data
      * @param $data
+     * @param $loanTransactionId
      * @return string
      */
-    public function insert($data, $transactionId): string
+    public function insert($data, $loanTransactionId): string
     {
         $dateNow = date("Y-m-d H:i:s");
-        $field = "transaction_id, month, due_date, amount, underpayment, paid, created_at";
-        $value = ":transaction_id, :month, :due_date, :amount, :underpayment, :paid, :created_at";
+        $field = "loan_transaction_id, month, due_date, amount, underpayment, paid, created_at";
+        $value = ":loan_transaction_id, :month, :due_date, :amount, :underpayment, :paid, :created_at";
 
         for ($i = 0; $i < count($data); $i++) {
             $params = [
                 [
-                    "field" => ":transaction_id",
-                    "value" => $transactionId
+                    "field" => ":loan_transaction_id",
+                    "value" => $loanTransactionId
                 ],
                 [
                     "field" => ":month",
@@ -76,14 +76,14 @@ class TransactionDetailService
                     "value" => $dateNow
                 ]
             ];
-            $this->transactionDetailProvider->insert($field, $value, $params);
+            $this->installmentProvider->insert($field, $value, $params);
         }
 
-        return (string) $transactionId;
+        return (string) $loanTransactionId;
     }
 
     /**
-     * function Update Transaction Detail Data
+     * function Update Installment Data
      * @param $data
      * @param $id
      * @return string
@@ -91,7 +91,7 @@ class TransactionDetailService
     public function update($data, $id): string
     {
         $dateNow = date("Y-m-d H:i:s");
-        $sql = "UPDATE transaction_details SET ";
+        $sql = "UPDATE installments SET ";
         $sqlQuery = '';
         $setField = 'updated_at = :updated_at';
 
@@ -103,21 +103,20 @@ class TransactionDetailService
         //Set Query String
         $sqlQuery .= $sql . $setField . ' WHERE id = :id';
 
-        $this->transactionDetailProvider->update($sqlQuery, $dateNow, $id);
+        $this->installmentProvider->update($sqlQuery, $dateNow, $id);
 
         return (string) $id['id'];
     }
 
     /**
-     * function Delete Transaction Detail Data
+     * function Delete Installment Data
      * @param $id
      * @return string
      */
     public function delete($id): string
     {
-        $this->transactionDetailProvider->delete($id);
+        $this->installmentProvider->delete($id);
 
         return $id['id'];
     }
-
 }

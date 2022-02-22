@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Modules\Transaction\Provider;
+declare(strict_types=1);
+
+namespace App\Modules\LoanTransaction\Provider;
 
 use App\Factory\Connection;
 use PDO;
 
-class TransactionProvider
+class InstallmentProvider
 {
     private Connection $connection;
 
@@ -31,48 +33,39 @@ class TransactionProvider
     }
 
     /**
-     * function Get All Transaction Data
+     * function Get All Installment Data
      * @return array
      */
-    public function getAll(): array
+    public function getAllByLoanTransactionId($loanTransactionId): array
     {
-        $sqlQuery = "SELECT transaction_date AS transactionDate, CS.name, CS.ktp, CS.date_of_birth AS dateOfBirth, LP.name AS loanPurpose  FROM transactions TR
-    INNER JOIN customers CS ON CS.id = TR.customer_id
-    INNER JOIN loan_purpose LP ON LP.id = TR.loan_purpose_id";
+        $sqlQuery = "SELECT *  FROM installments WHERE loan_transaction_id =:loan_transaction_id";
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
+        $query->bindParam("loan_transaction_id", $loanTransactionId);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * function Get by ID Transaction Data
-     * @param $id
+     * function Get All Installment Data
      * @return array
      */
-    public function getById($id): array
+    public function getAllByLoanTransactionIdNotPaid($loanTransactionId): array
     {
-        $sqlQuery = "SELECT transaction_date AS transactionDate, CS.name, CS.ktp, CS.date_of_birth AS dateOfBirth, LP.name AS loanPurpose FROM transactions TR
-    INNER JOIN customers CS ON CS.id = TR.customer_id
-    INNER JOIN loan_purpose LP ON LP.id = TR.loan_purpose_id WHERE TR.id=:id";
+        $sqlQuery = "SELECT *  FROM installments WHERE loan_transaction_id =:loan_transaction_id AND paid = 0 ORDER BY month ASC";
         $query = $this->getConnection()->connect()->prepare($sqlQuery);
-        $query->bindParam("id", $id);
+        $query->bindParam("loan_transaction_id", $loanTransactionId);
         $query->execute();
-        $data = $query->fetch(PDO::FETCH_ASSOC);
-
-        if (!$data) {
-            return [];
-        }
-        return $data;
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * function Insert Transaction Data
+     * function Insert Installment Data
      * @param $data
      * @return string
      */
     public function insert($field, $value, $params): string
     {
-        $sqlQuery = "INSERT INTO transactions ($field) VALUES ($value)";
+        $sqlQuery = "INSERT INTO installments ($field) VALUES ($value)";
         $pdo = $this->getConnection()->connect();
         $query = $pdo->prepare($sqlQuery);
         foreach ($params as $param) {
@@ -84,13 +77,30 @@ class TransactionProvider
     }
 
     /**
-     * function Delete Transaction Data
+     * function Update Installment Data
+     * @param $data
+     * @param $id
+     * @return string
+     */
+    public function update($sqlQuery, $dateNow, $id): string
+    {
+        $pdo = $this->getConnection()->connect();
+        $query = $pdo->prepare($sqlQuery);
+        $query->bindParam(":updated_at", $dateNow);
+        $query->bindParam(":id", $id['id']);
+        $query->execute();
+
+        return (string) $id['id'];
+    }
+
+    /**
+     * function Delete Installment Data
      * @param $id
      * @return string
      */
     public function delete($id): string
     {
-        $sqlQuery = "DELETE FROM transactions WHERE id=:id";
+        $sqlQuery = "DELETE FROM installments WHERE id=:id";
         $pdo = $this->getConnection()->connect();
         $query = $pdo->prepare($sqlQuery);
         $query->bindParam(":id", $id['id']);

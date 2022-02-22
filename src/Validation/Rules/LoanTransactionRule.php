@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace App\Validation\Rules;
 
 use App\Factory\Connection;
-use App\Modules\Transaction\Provider\TransactionProvider;
-use App\Modules\Transaction\Service\TransactionService;
+use App\Modules\LoanTransaction\Provider\LoanTransactionProvider;
+use App\Modules\LoanTransaction\Service\LoanTransactionService;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as v;
 
-class TransactionRule extends AbstractRule
+class LoanTransactionRule extends AbstractRule
 {
     public function validate($input): bool
     {
         $input = (int) $input;
         $transaction = v::intType()->notEmpty()->validate($input);
 
-        //Get Transaction Service
+        //Get Loan Transaction Service
         $connection = new Connection();
-        $transactionProvider = new TransactionProvider($connection);
-        $transactionService = new TransactionService($transactionProvider);
+        $transactionProvider = new LoanTransactionProvider($connection);
+        $transactionService = new LoanTransactionService($transactionProvider);
 
         if ($transaction && count($transactionService->getById($input)) > 0) {
             return true;

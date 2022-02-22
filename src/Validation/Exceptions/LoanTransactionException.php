@@ -4,14 +4,14 @@ namespace App\Validation\Exceptions;
 
 use Respect\Validation\Exceptions\ValidationException;
 
-class TransactionException extends ValidationException
+class LoanTransactionException extends ValidationException
 {
     protected $defaultTemplates = [
         self::MODE_DEFAULT => [
             self::STANDARD => '{{name}} not be processed.',
         ],
         self::MODE_NEGATIVE => [
-            self::STANDARD => '{{name}} Transaction not valid.',
+            self::STANDARD => '{{name}} Loan Transaction not valid.',
         ],
     ];
 }
