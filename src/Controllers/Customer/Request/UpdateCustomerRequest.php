@@ -39,14 +39,12 @@ class UpdateCustomerRequest extends BaseRequest
             $returnBody['dateOfBirth'] = $this->customerModel->getDateOfBirth();
             $returnBody['id'] = $id;
             $statusCode = 200;
-
-            $returnBody = json_encode($returnBody);
         } else {
-            $returnBody = json_encode($validate);
+            $returnBody = $validate;
             $statusCode = 422;
         }
 
-        $this->response->getBody()->write($returnBody);
+        $this->response->getBody()->write(json_encode($returnBody));
         return $this->response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode);

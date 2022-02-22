@@ -32,14 +32,12 @@ class UpdateLoanPurposeRequest extends BaseRequest
             $returnBody = $data;
             $returnBody['id'] = $id;
             $statusCode = 200;
-
-            $returnBody = json_encode($returnBody);
         } else {
-            $returnBody = json_encode($validation);
+            $returnBody = $validation;
             $statusCode = 422;
         }
 
-        $this->response->getBody()->write($returnBody);
+        $this->response->getBody()->write(json_encode($returnBody));
         return $this->response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode);
