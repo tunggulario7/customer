@@ -28,9 +28,7 @@ class PaymentRequest extends BaseRequest
         $validate = $this->paymentModel->validate($requestBody);
 
         if (empty($validate)) {
-            $this->paymentService->payment($requestBody['transactionId'], $requestBody['totalPay']);
-
-            $returnBody = $this->transactionDetailService->getAllByTransactionId($requestBody['transactionId']);
+            $returnBody = $this->paymentService->payment($requestBody['transactionId'], $requestBody['totalPay']);
             $statusCode = 200;
         } else {
             $returnBody = $validate;

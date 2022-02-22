@@ -24,7 +24,7 @@ class PaymentService
      * @param $id
      * @return string
      */
-    public function payment($transactionId, $amount): int
+    public function payment($transactionId, $amount): array
     {
         $transactionDetailData = $this->transactionDetailService->getAllByTransactionIdNotPaid($transactionId);
 
@@ -43,11 +43,18 @@ class PaymentService
             
             $this->transactionDetailService->update($payment, $data);
 
+            $payment['notice'] = "";
+            if ($data['due_date'] < date("Y-m-d H:i:s")) {
+                $payment['notice'] = "Your bill is past due";
+            }
+
+            $rows[] = $payment;
+
             if ($amount <= 0) {
                 break;
             }
         }
 
-        return $transactionId;
+        return $rows;
     }
 }
