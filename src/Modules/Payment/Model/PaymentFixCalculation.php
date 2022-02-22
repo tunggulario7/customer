@@ -28,6 +28,17 @@ class PaymentFixCalculation implements PaymentInterface
         return $this->amount;
     }
 
+    protected int $overAmount;
+    public function setOverAmount(int $overAmount): void
+    {
+        $this->overAmount = $overAmount;
+    }
+
+    public function getOverAmount(): int
+    {
+        return $this->overAmount;
+    }
+
     protected float $payback;
     protected float $underPayment;
     protected float $overPayment;
@@ -36,12 +47,12 @@ class PaymentFixCalculation implements PaymentInterface
     public function calculate(): void
     {
         if ($this->getTotalPay() >= $this->getAmount()) {
-            $this->payback = $this->getAmount();
+            $this->payback = $this->getAmount() + $this->getOverAmount();
             $this->underPayment = 0;
             $this->overPayment = $this->getTotalPay() - $this->getAmount();
             $this->flagPaid = 1;
         } else {
-            $this->payback = $this->getTotalPay();
+            $this->payback = $this->getTotalPay() + $this->getOverAmount();
             $this->underPayment = abs($this->getTotalPay() - $this->getAmount());
             $this->overPayment = 0;
             $this->flagPaid = 0;

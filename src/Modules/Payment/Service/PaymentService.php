@@ -32,20 +32,17 @@ class PaymentService
             $fixedPayment = new PaymentFixCalculation();
             $fixedPayment->setTotalPay((int) $amount);
             $fixedPayment->setAmount((int) $data['underpayment']);
+            $fixedPayment->setOverAmount((int) $data['payback']);
             $payment = (new Payment())
                 ->setPaymentModel($fixedPayment, $this->transactionDetailService)
                 ->getCalculation();
 
             $amount = $payment['overPayment'];
-
-            // var_dump($payment['overPayment']);
             
             unset($payment['overPayment']);
             
-            // var_dump($payment);
             $this->transactionDetailService->update($payment, $data);
 
-            // var_dump($amount);
             if ($amount <= 0) {
                 break;
             }

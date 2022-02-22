@@ -20,4 +20,6 @@ interface PaymentInterface
 
     public function setTotalPay(int $totalPay): void;
 
+    public function setOverAmount(int $overAmount): void;
+
 }
