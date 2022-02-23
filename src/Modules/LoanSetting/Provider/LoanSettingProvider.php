@@ -64,6 +64,22 @@ class LoanSettingProvider
     /**
      * function Get by ID Loan Setting Data
      * @param $loanPurposeid
+     * @param $period
+     * @return array
+     */
+    public function getByLoanPurposePeriod($loanPurposeid, $period): array
+    {
+        $sqlQuery = "SELECT LS.id, name AS loanPurpose, period FROM loan_settings LS INNER JOIN loan_purpose LP ON LP.id = LS.loan_purpose_id WHERE loan_purpose_id=:loan_purpose_id AND period=:period";
+        $query = $this->getConnection()->connect()->prepare($sqlQuery);
+        $query->bindParam("loan_purpose_id", $loanPurposeid);
+        $query->bindParam("period", $period);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * function Get by ID Loan Setting Data
+     * @param $loanPurposeid
      * @return array
      */
     public function getByLoanPurpose($loanPurposeid): array

@@ -107,9 +107,9 @@ class LoanTransaction
         $this->setLoanAmount($request['loanAmount']);
 
         $customerValidator = v::attribute('customerId', v::CustomerRule())
-            ->attribute('loanDate', v::date())
+            ->attribute('loanDate', v::LoanDateRule())
             ->attribute('loanPurpose', v::LoanPurposeRule())
-            ->attribute('period', v::intType()->between(1, 12))
+            ->attribute('period', v::LoanPurposePeriodRule($this->getLoanPurpose()))
             ->attribute('loanAmount', v::number()->between(1000, 10000));
 
         $errorMessage = [];

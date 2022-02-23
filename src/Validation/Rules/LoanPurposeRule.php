@@ -6,7 +6,6 @@ namespace App\Validation\Rules;
 
 use App\Factory\Connection;
 use App\Modules\LoanPurpose\Provider\LoanPurposeProvider;
-use App\Modules\LoanPurpose\Service\LoanPurposeService;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as v;
 
@@ -29,5 +28,4 @@ class LoanPurposeRule extends AbstractRule
 
         return false;
     }
-
 }

@@ -35,13 +35,24 @@ class LoanSettingService
     }
 
     /**
-     * function Get by ID Loan Setting Data
+     * function Get Loan Setting Data
      * @param $loanPurposeid
      * @return array
      */
     public function getByLoanPurpose($loanPurposeid): array
     {
         return $this->loanSettingProvider->getByLoanPurpose($loanPurposeid);
+    }
+
+    /**
+     * function Get Loan Setting Data
+     * @param $loanPurposeid
+     * @param $period
+     * @return array
+     */
+    public function getByLoanPurposePeriod($loanPurposeid, $period): array
+    {
+        return $this->loanSettingProvider->getByLoanPurposePeriod($loanPurposeid, $period);
     }
 
     /**
