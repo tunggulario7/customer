@@ -1,88 +1,138 @@
 <?php
 
-namespace Tests\Application\Actions\Customer;
+namespace Tests\Application\Actions;
 
-use App\Controllers\TransactionController;
+use App\Controllers\LoanTransaction\Model\LoanTransaction;
+use App\Controllers\LoanTransaction\Request\AddLoanTransactionRequest;
+use App\Factory\Connection;
+use App\Modules\LoanTransaction\Provider\InstallmentProvider;
+use App\Modules\LoanTransaction\Provider\LoanTransactionProvider;
+use App\Modules\LoanTransaction\Service\InstallmentService;
+use App\Modules\LoanTransaction\Service\LoanTransactionService;
+use Slim\Psr7\Response;
 use Tests\TestCase;
 
 class TransactionTest extends TestCase
 {
+
+    public function setResponse(): Response
+    {
+        return new Response();
+    }
+
+    public function setLoanTransactionModel(): LoanTransaction
+    {
+        return new LoanTransaction();
+    }
+
+    public function setLoanTransactionService() :LoanTransactionService
+    {
+        $connection = new Connection();
+        $loanTransactionProvider = new LoanTransactionProvider($connection);
+        return new LoanTransactionService($loanTransactionProvider);
+    }
+
+    public function setInstallmentService(): InstallmentService
+    {
+        $connection = new Connection();
+        $installmentProvider = new InstallmentProvider($connection);
+        return new InstallmentService($installmentProvider);
+    }
+
     public function testInsertDataProvider(): array
     {
         return [
             [
                 [
                     'customerId' => "3",
-                    'transactionDate' => "2022-02-07",
+                    'loanDate' => "2022-02-07",
                     'loanPurpose' => 3,
                     'period' => 6,
                     'loanAmount' => 10000,
                 ], 200,
                 '{
-                    "transactionDate": "2022-02-07 00:00:00",
-                    "name": "Lorem Ipsum",
+                    "loanDate": "2022-02-23 00:00:00",
+                    "name": "Tunggul Ario S",
                     "ktp": "1234562312923456",
-                    "dateOfBirth": "2000-01-24",
+                    "dateOfBirth": "1992-12-23",
                     "loanPurpose": "Wedding",
                     "installment": [
                         {
-                            "id": "31",
-                            "transaction_id": "18",
+                            "id": "16",
+                            "loan_transaction_id": "5",
                             "month": "1",
-                            "due_date": "2022-03-09",
+                            "due_date": "2022-03-25",
+                            "payback_date": null,
                             "amount": "1667",
+                            "payback": null,
+                            "underpayment": "1667",
                             "paid": "0",
-                            "created_at": "2022-02-07 22:44:11",
+                            "created_at": "2022-02-23 10:08:45",
                             "updated_at": null
                         },
                         {
-                            "id": "32",
-                            "transaction_id": "18",
+                            "id": "17",
+                            "loan_transaction_id": "5",
                             "month": "2",
-                            "due_date": "2022-04-08",
+                            "due_date": "2022-04-24",
+                            "payback_date": null,
                             "amount": "1667",
+                            "payback": null,
+                            "underpayment": "1667",
                             "paid": "0",
-                            "created_at": "2022-02-07 22:44:11",
+                            "created_at": "2022-02-23 10:08:45",
                             "updated_at": null
                         },
                         {
-                            "id": "33",
-                            "transaction_id": "18",
+                            "id": "18",
+                            "loan_transaction_id": "5",
                             "month": "3",
-                            "due_date": "2022-05-08",
+                            "due_date": "2022-05-24",
+                            "payback_date": null,
                             "amount": "1667",
+                            "payback": null,
+                            "underpayment": "1667",
                             "paid": "0",
-                            "created_at": "2022-02-07 22:44:12",
+                            "created_at": "2022-02-23 10:08:45",
                             "updated_at": null
                         },
                         {
-                            "id": "34",
-                            "transaction_id": "18",
+                            "id": "19",
+                            "loan_transaction_id": "5",
                             "month": "4",
-                            "due_date": "2022-06-07",
+                            "due_date": "2022-06-23",
+                            "payback_date": null,
                             "amount": "1667",
+                            "payback": null,
+                            "underpayment": "1667",
                             "paid": "0",
-                            "created_at": "2022-02-07 22:44:12",
+                            "created_at": "2022-02-23 10:08:45",
                             "updated_at": null
                         },
                         {
-                            "id": "35",
-                            "transaction_id": "18",
+                            "id": "20",
+                            "loan_transaction_id": "5",
                             "month": "5",
-                            "due_date": "2022-07-07",
+                            "due_date": "2022-07-23",
+                            "payback_date": null,
                             "amount": "1667",
+                            "payback": null,
+                            "underpayment": "1667",
                             "paid": "0",
-                            "created_at": "2022-02-07 22:44:12",
+                            "created_at": "2022-02-23 10:08:45",
                             "updated_at": null
                         },
                         {
-                            "id": "36",
-                            "transaction_id": "18",
+                            "id": "21",
+                            "loan_transaction_id": "5",
                             "month": "6",
-                            "due_date": "2022-08-06",
+                            "due_date": "2022-08-22",
+                            "payback_date": null,
                             "amount": "1667",
+                            "payback": null,
+                            "underpayment": "1667",
                             "paid": "0",
-                            "created_at": "2022-02-07 22:44:12",
+                            "created_at": "2022-02-23 10:08:45",
                             "updated_at": null
                         }
                     ]
@@ -97,7 +147,7 @@ class TransactionTest extends TestCase
             [
                 [
                     'customerId' => "6",
-                    'transactionDate' => "2022-02-07",
+                    'loanDate' => "2022-02-07",
                     'loanPurpose' => 3,
                     'period' => 6,
                     'loanAmount' => 10000,
@@ -114,14 +164,11 @@ class TransactionTest extends TestCase
         $requestBody = $this->createRequest('POST', '/transaction', ['Content-Type' => 'application/json']);
         $json = $requestBody->withParsedBody($bodyJson);
 
-        $response = new \Slim\Psr7\Response();
-
-        $customer = new TransactionController();
-        $responseData = $customer->insert($json, $response);
-
-        $responseArray = json_decode($responseData->getBody(), true);
+        $addLoanTransactionRequest = new AddLoanTransactionRequest($this->setLoanTransactionService(), $this->setInstallmentService(), $this->setLoanTransactionModel());
+        $responseData = $addLoanTransactionRequest->__invoke($json, $this->setResponse(), []);
 
         $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
+        $this->assertEquals(json_decode($expectedResponse, true), json_decode($responseData->getBody(), true));
     }
 
     /** @dataProvider testNegativeInsertDataProvider */
@@ -131,14 +178,10 @@ class TransactionTest extends TestCase
         $requestBody = $this->createRequest('POST', '/customer', ['Content-Type' => 'application/json']);
         $json = $requestBody->withParsedBody($bodyJson);
 
-        $response = new \Slim\Psr7\Response();
-
-        $customer = new TransactionController();
-        $responseData = $customer->insert($json, $response);
-
-        $responseArray = json_decode($responseData->getBody(), true);
+        $addLoanTransactionRequest = new AddLoanTransactionRequest($this->setLoanTransactionService(), $this->setInstallmentService(), $this->setLoanTransactionModel());
+        $responseData = $addLoanTransactionRequest->__invoke($json, $this->setResponse(), []);
 
         $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
-        $this->assertEquals((array) ($expectedResponse), $responseArray);
+        $this->assertEquals(json_decode($expectedResponse, true), json_decode($responseData->getBody(), true));
     }
 }

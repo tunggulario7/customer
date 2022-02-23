@@ -87,10 +87,8 @@ class CustomerTest extends TestCase
         $addCustomerRequest = new AddCustomerRequest($this->setCustomerService(), $this->setCustomerModel());
         $responseData = $addCustomerRequest->__invoke($json, $this->setResponse(), []);
 
-        $responseArray = json_decode($responseData->getBody(), true);
-
         $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
-        $this->assertEquals(json_decode($expectedResponse, true), $responseArray);
+        $this->assertEquals(json_decode($expectedResponse, true), json_decode($responseData->getBody(), true));
     }
 
     /** @dataProvider testNegativeInsertDataProvider */
@@ -103,10 +101,8 @@ class CustomerTest extends TestCase
         $addCustomerRequest = new AddCustomerRequest($this->setCustomerService(), $this->setCustomerModel());
         $responseData = $addCustomerRequest->__invoke($json, $this->setResponse(), []);
 
-        $responseArray = json_decode($responseData->getBody(), true);
-
         $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
-        $this->assertEquals(json_decode($expectedResponse, true), $responseArray);
+        $this->assertEquals(json_decode($expectedResponse, true), json_decode($responseData->getBody(), true));
     }
 
     /** @dataProvider testInsertDataProvider */
@@ -119,26 +115,22 @@ class CustomerTest extends TestCase
         $addCustomerRequest = new UpdateCustomerRequest($this->setCustomerService(), $this->setCustomerModel());
         $responseData = $addCustomerRequest->__invoke($json, $this->setResponse(), ['id' => 37]);
 
-        $responseArray = json_decode($responseData->getBody(), true);
-
         $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
-        $this->assertEquals(json_decode($expectedResponse, true), $responseArray);
+        $this->assertEquals(json_decode($expectedResponse, true), json_decode($responseData->getBody(), true));
     }
 
     /** @dataProvider testNegativeInsertDataProvider */
     public function testNegativeUpdateData(array $bodyJson, int $expectedStatusCode, string $expectedResponse)
     {
         //Create Request Body
-        $requestBody = $this->createRequest('PUT', '/customer/38', ['Content-Type' => 'application/json']);
+        $requestBody = $this->createRequest('PUT', '/customer/37', ['Content-Type' => 'application/json']);
         $json = $requestBody->withParsedBody($bodyJson);
 
         $addCustomerRequest = new UpdateCustomerRequest($this->setCustomerService(), $this->setCustomerModel());
-        $responseData = $addCustomerRequest->__invoke($json, $this->setResponse(), ['id' => 3]);
-
-        $responseArray = json_decode($responseData->getBody(), true);
+        $responseData = $addCustomerRequest->__invoke($json, $this->setResponse(), ['id' => 37]);
 
         $this->assertEquals($expectedStatusCode, $responseData->getStatusCode());
-        $this->assertEquals(json_decode($expectedResponse, true), $responseArray);
+        $this->assertEquals(json_decode($expectedResponse, true), json_decode($responseData->getBody(), true));
     }
 
     public function testGetData()
